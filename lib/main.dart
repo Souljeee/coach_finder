@@ -1,3 +1,4 @@
+import 'package:coach_finder/app_routing.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,18 +10,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              Center(
-                child: Text('Hello world!'),
-              )
-            ],
+    return MaterialApp.router(
+      routerConfig: router,
+      builder: (context, child) {
+        return Scaffold(
+          body: SafeArea(
+            child: child!,
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }
