@@ -1,6 +1,6 @@
-import 'package:coach_finder/home_screen.dart';
-import 'package:coach_finder/profile_screen.dart';
-import 'package:coach_finder/root_screen.dart';
+import 'package:coach_finder/features/home/ui/home_screen.dart';
+import 'package:coach_finder/features/profile/ui/profile_screen.dart';
+import 'package:coach_finder/features/root/root_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(

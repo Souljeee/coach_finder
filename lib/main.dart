@@ -1,4 +1,4 @@
-import 'package:coach_finder/app_routing.dart';
+import 'package:coach_finder/common/router/app_routing.dart';
 import 'package:flutter/material.dart';
 
 void main() {
