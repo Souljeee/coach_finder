@@ -11,6 +11,11 @@ sealed class AuthState extends Equatable {
 
   const factory AuthState.unauthorized() = _UnauthorizedState;
 
+  bool get isAuthorized => maybeMap(
+        orElse: () => false,
+        authorized: (_) => true,
+      );
+
   T map<T>({
     required AuthStateMatch<T, _CheckingAuthState> checkingAuth,
     required AuthStateMatch<T, _AuthorizedState> authorized,
@@ -68,4 +73,3 @@ class _CheckingAuthState extends AuthState {
   @override
   List<Object?> get props => [];
 }
-

@@ -5,11 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 abstract interface class AuthController {
   void signInWithEmailAndPassword(String email, String password);
 
-  void signUpWithEmailAndPassword({
-    required String email,
-    required String password,
-  });
-
   void signOut();
 
   bool get authenticated;
@@ -37,30 +32,40 @@ class AuthScope extends StatefulWidget {
 }
 
 class _AuthScopeState extends State<AuthScope> implements AuthController {
+  late final AuthBloc _authBloc;
+  late AuthState _authState;
+
   @override
-  // TODO: implement authenticated
-  bool get authenticated => throw UnimplementedError();
+  void initState() {
+    _authBloc = AuthBloc();
+    _authState = _authBloc.state;
+    super.initState();
+  }
+
+  @override
+  bool get authenticated => _authState.isAuthorized;
 
   @override
   void signInWithEmailAndPassword(String email, String password) {
-    // TODO: implement signInWithEmailAndPassword
+    _authBloc.add(
+      AuthEvent.signIn(
+        email: email,
+        password: password,
+      ),
+    );
   }
 
   @override
   void signOut() {
-    // TODO: implement signOut
-  }
-
-  @override
-  void signUpWithEmailAndPassword(
-      {required String email, required String password}) {
-    // TODO: implement signUpWithEmailAndPassword
+    _authBloc.add(const AuthEvent.signOut());
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
+        _authState = state;
+
         return _AuthInherited(
           authController: this,
           authState: state,
@@ -72,14 +77,12 @@ class _AuthScopeState extends State<AuthScope> implements AuthController {
 }
 
 class _AuthInherited extends InheritedWidget {
-  /// Create _AuthInherited widget
   const _AuthInherited({
     required super.child,
     required this.authController,
     required AuthState authState,
   }) : _authState = authState;
 
-  /// Auth controller
   final AuthController authController;
 
   final AuthState _authState;
