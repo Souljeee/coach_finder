@@ -9,7 +9,7 @@ sealed class AuthState extends Equatable {
 
   const factory AuthState.authorized() = _AuthorizedState;
 
-  const factory AuthState.unauthorized() = _UnauthorizedState;
+  const factory AuthState.unauthorized({String? message}) = _UnauthorizedState;
 
   bool get isAuthorized => maybeMap(
         orElse: () => false,
@@ -61,10 +61,11 @@ class _AuthorizedState extends AuthState {
 }
 
 class _UnauthorizedState extends AuthState {
-  const _UnauthorizedState();
+  final String? message;
+  const _UnauthorizedState({this.message = null});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [message];
 }
 
 class _CheckingAuthState extends AuthState {
