@@ -1,4 +1,5 @@
 import 'package:coach_finder/common/data/secure_storage.dart';
+import 'package:coach_finder/common/network/network.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -25,9 +26,11 @@ class AppDependenciesScope extends StatefulWidget {
 
 class _AppDependenciesScopeState extends State<AppDependenciesScope> {
   final _secureStorage = SecureStorage();
+  final _networkClient = CustomNetworkClient();
 
   late final _appDependencies = AppDependencies(
     secureStorage: _secureStorage,
+    networkClient: _networkClient,
   );
 
   @override
@@ -55,11 +58,16 @@ class _AppDependenciesInh extends InheritedWidget {
 
 class AppDependencies extends Equatable {
   final SecureStorage secureStorage;
+  final CustomNetworkClient networkClient;
 
   const AppDependencies({
     required this.secureStorage,
+    required this.networkClient,
   });
 
   @override
-  List<Object?> get props => [secureStorage];
+  List<Object?> get props => [
+        secureStorage,
+        networkClient,
+      ];
 }
