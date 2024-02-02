@@ -32,7 +32,7 @@ class RemoteAuthDataSource {
     );
   }
 
-  Future<bool> checkAuth({required String email}) async {
+  Future<bool> checkAuth() async {
     final response = await _networkClient.get('/check_auth');
 
     return response.data['hasAccess'];

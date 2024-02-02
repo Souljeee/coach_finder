@@ -40,7 +40,7 @@ class AuthRepository {
     _secureStorage.deleteSecureData(key: SecureStorageKeys.authToken);
   }
 
-  Future<bool> checkAuth({required String email}) async {
-    return _authRemoteDataSource.checkAuth(email: email);
+  Future<bool> checkAuth() async {
+    return _authRemoteDataSource.checkAuth();
   }
 }
