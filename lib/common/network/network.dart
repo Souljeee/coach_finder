@@ -13,5 +13,13 @@ class CustomNetworkClient {
         request: true,
       ),
     );
+
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          options.baseUrl = 'http://127.0.0.1:8080';
+        },
+      ),
+    );
   }
 }
