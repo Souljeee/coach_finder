@@ -3,16 +3,17 @@ import 'package:coach_finder/features/auth/data/remote_models/login_response.dar
 import 'package:dio/dio.dart';
 
 class RemoteAuthDataSource {
-  final Dio networkClient;
+  final Dio _networkClient;
 
-  const RemoteAuthDataSource({required this.networkClient});
+  const RemoteAuthDataSource({required Dio networkClient})
+      : _networkClient = networkClient;
 
   Future<LoginResponse> login({
     required String email,
     required String password,
     required AccountType accountType,
   }) async {
-    final response = await networkClient.post(
+    final response = await _networkClient.post(
       '/login',
       data: {
         'email': email,
@@ -25,14 +26,14 @@ class RemoteAuthDataSource {
   }
 
   Future<void> logout({required String email}) async {
-    await networkClient.post(
+    await _networkClient.post(
       '/logout',
       data: {'email': email},
     );
   }
 
   Future<bool> checkAuth({required String email}) async {
-    final response = await networkClient.get('/check_auth');
+    final response = await _networkClient.get('/check_auth');
 
     return response.data['hasAccess'];
   }
