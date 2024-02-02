@@ -27,7 +27,8 @@ class AppDependenciesScope extends StatefulWidget {
 
 class _AppDependenciesScopeState extends State<AppDependenciesScope> {
   final _secureStorage = SecureStorage();
-  final _networkClient = CustomNetworkClient().client;
+  late final _networkClient =
+      CustomNetworkClient(secureStorage: _secureStorage).client;
 
   late final _appDependencies = AppDependencies(
     secureStorage: _secureStorage,

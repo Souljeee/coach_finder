@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 
 class RemoteAuthDataSource {
   final Dio networkClient;
-  final _authTokenHeader = 'auth-token';
 
   const RemoteAuthDataSource({required this.networkClient});
 
@@ -33,12 +32,7 @@ class RemoteAuthDataSource {
   }
 
   Future<bool> checkAuth({required String email}) async {
-    final response = await networkClient.get(
-      '/check_auth',
-      options: Options(
-        headers: {_authTokenHeader: 'empty token'},
-      ),
-    );
+    final response = await networkClient.get('/check_auth');
 
     return response.data['hasAccess'];
   }
