@@ -23,4 +23,11 @@ class RemoteAuthDataSource {
 
     return LoginResponse.fromJson(response.data);
   }
+
+  Future<void> logout({required String email}) async {
+    await networkClient.post(
+      '/logout',
+      data: {'email': email},
+    );
+  }
 }
