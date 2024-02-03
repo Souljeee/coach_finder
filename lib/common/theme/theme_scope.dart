@@ -9,6 +9,15 @@ class ThemeScope extends StatefulWidget {
     super.key,
   });
 
+  static AppTheme of(BuildContext context) {
+    final _ThemeInh? result =
+    context.dependOnInheritedWidgetOfExactType<_ThemeInh>();
+
+    assert(result != null, 'No ThemeScope found in context');
+
+    return result!.appTheme;
+  }
+
   @override
   State<ThemeScope> createState() => _ThemeScopeState();
 }
