@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract interface class AuthController {
-  void signInWithEmailAndPassword(
-    String email,
-    String password,
-    AccountType accountType,
-  );
+  void signInWithEmailAndPassword(String email,
+      String password,
+      AccountType accountType,);
 
   void signOut(String email);
 
@@ -27,7 +25,7 @@ class AuthScope extends StatefulWidget {
 
   static AuthController of(BuildContext context) {
     final _AuthInherited? result =
-        context.dependOnInheritedWidgetOfExactType<_AuthInherited>();
+    context.dependOnInheritedWidgetOfExactType<_AuthInherited>();
 
     assert(result != null, 'No AuthScope found in context');
 
@@ -44,23 +42,30 @@ class _AuthScopeState extends State<AuthScope> implements AuthController {
 
   @override
   void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
     _authBloc = AuthBloc(
-      authRepository: AppDependenciesScope.of(context).authRepository,
-    )..add(const AuthEvent.checkAuth());
+      authRepository: AppDependenciesScope
+          .of(context)
+          .authRepository,
+    )
+      ..add(const AuthEvent.checkAuth());
 
     _authState = _authBloc.state;
-    super.initState();
+
+    super.didChangeDependencies();
   }
 
   @override
   bool get authenticated => _authState.isAuthorized;
 
   @override
-  void signInWithEmailAndPassword(
-    String email,
-    String password,
-    AccountType accountType,
-  ) {
+  void signInWithEmailAndPassword(String email,
+      String password,
+      AccountType accountType,) {
     _authBloc.add(
       AuthEvent.signIn(
         email: email,
@@ -77,21 +82,31 @@ class _AuthScopeState extends State<AuthScope> implements AuthController {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        _authState = state;
+    return BlocProvider.value(
+      value: _authBloc,
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          _authState = state;
 
-        return _AuthInherited(
-          authController: this,
-          authState: state,
-          child: state.map(
-            checkingAuth: (state) => Container(),
-            authorized: (_) => const AuthScreen(),
-            unauthorized: (_) => widget.child,
-          ),
-        );
-      },
+          return _AuthInherited(
+            authController: this,
+            authState: state,
+            child: state.map(
+              checkingAuth: (state) => Container(),
+              authorized: (_) => widget.child,
+              unauthorized: (_) => const AuthScreen(),
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _authBloc.close();
+
+    super.dispose();
   }
 }
 

@@ -23,7 +23,7 @@ class CustomNetworkClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          options.baseUrl = 'http://127.0.0.1:8080';
+          options.baseUrl = 'http://10.0.2.2:8080';
 
           final authToken = await _getAuthToken();
 
