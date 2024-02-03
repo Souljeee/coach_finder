@@ -33,8 +33,16 @@ class RemoteAuthDataSource {
   }
 
   Future<bool> checkAuth() async {
-    final response = await _networkClient.get('/check_auth');
+    try{
+      final response = await _networkClient.get('/check_auth');
 
-    return response.data['hasAccess'];
+      return response.data['hasAccess'];
+    }on DioException catch(e, s){
+      if(e.response?.statusCode == 401){
+        return false;
+      }
+
+      Error.throwWithStackTrace(e, s);
+    }
   }
 }
