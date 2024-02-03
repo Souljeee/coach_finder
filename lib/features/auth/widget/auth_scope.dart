@@ -1,6 +1,7 @@
 import 'package:coach_finder/common/data/account_type.dart';
 import 'package:coach_finder/common/dependencies/app_dependencies.dart';
 import 'package:coach_finder/features/auth/bloc/auth_bloc.dart';
+import 'package:coach_finder/features/auth/widget/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -82,7 +83,11 @@ class _AuthScopeState extends State<AuthScope> implements AuthController {
         return _AuthInherited(
           authController: this,
           authState: state,
-          child: widget.child,
+          child: state.map(
+            checkingAuth: (state) => Container(),
+            authorized: (_) => const AuthScreen(),
+            unauthorized: (_) => widget.child,
+          ),
         );
       },
     );
