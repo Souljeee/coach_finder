@@ -25,18 +25,19 @@ class _AppState extends State<App> {
       child: GestureDetector(
         onTap: () => _focusNode.unfocus(),
         child: MaterialApp.router(
-            routerConfig: router,
-            builder: (context, child) {
-              return AppDependenciesScope(
-                child: AuthScope(
-                  child: Scaffold(
-                    body: SafeArea(
-                      child: child!,
-                    ),
+          routerConfig: router,
+          builder: (context, child) {
+            return AppDependenciesScope(
+              child: AuthScope(
+                child: Scaffold(
+                  body: SafeArea(
+                    child: child!,
                   ),
                 ),
-              );
-            }),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
