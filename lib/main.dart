@@ -8,24 +8,36 @@ void main() {
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
 
   @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final FocusScopeNode _focusNode = FocusScopeNode();
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      builder: (context, child) {
-        return AppDependenciesScope(
-          child: AuthScope(
-            child: Scaffold(
-              body: SafeArea(
-                child: child!,
-              ),
-            ),
-          ),
-        );
-      }
+    return FocusScope(
+      node: _focusNode,
+      child: GestureDetector(
+        onTap: () => _focusNode.unfocus(),
+        child: MaterialApp.router(
+            routerConfig: router,
+            builder: (context, child) {
+              return AppDependenciesScope(
+                child: AuthScope(
+                  child: Scaffold(
+                    body: SafeArea(
+                      child: child!,
+                    ),
+                  ),
+                ),
+              );
+            }),
+      ),
     );
   }
 }
