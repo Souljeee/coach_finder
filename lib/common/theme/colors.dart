@@ -8,6 +8,6 @@ class AppColors {
   static const soft = Color(0xFFE5E1EE);
   static const text = Color(0xFF000000);
   static const textSecondary = Color(0xFF676666);
-
   static const error = Color(0xFFA11111);
+  static const white = Color(0xFFFFFFFF);
 }

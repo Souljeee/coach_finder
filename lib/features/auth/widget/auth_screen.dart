@@ -1,8 +1,8 @@
 import 'package:coach_finder/common/data/account_type.dart';
 import 'package:coach_finder/common/theme/colors.dart';
+import 'package:coach_finder/common/widgets/custom_elevated_button.dart';
 import 'package:coach_finder/common/widgets/custom_text_field.dart';
 import 'package:coach_finder/features/auth/widget/account_type_scope.dart';
-import 'package:coach_finder/features/auth/widget/auth_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -19,16 +19,16 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: AccountTypeScope(
           child: Column(
             children: [
               Spacer(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 child: _AccountTypeSelector(),
               ),
-              const Text('solo'),
               Spacer(),
             ],
           ),
@@ -39,9 +39,7 @@ class _AuthScreenState extends State<AuthScreen> {
 }
 
 class _AccountTypeSelector extends StatefulWidget {
-  const _AccountTypeSelector({
-    super.key,
-  });
+  const _AccountTypeSelector();
 
   @override
   State<_AccountTypeSelector> createState() => _AccountTypeSelectorState();
@@ -101,6 +99,12 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
                 hint: 'Пароль',
                 prefixIcon: const Icon(Icons.lock),
               ),
+              const SizedBox(height: 16),
+              CustomElevatedButton(
+                title: 'Войти',
+                maxSize: true,
+                onTap: () {},
+              ),
             ],
           ),
         ),
@@ -125,7 +129,8 @@ class _TypeSelectionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onSelect,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.soft : AppColors.textSecondary,
           borderRadius: const BorderRadius.only(
