@@ -2,18 +2,22 @@ import 'package:coach_finder/common/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+typedef ValidationMessagesMap = Map<String, String Function(Object)>?;
+
 class CustomTextField<T> extends StatelessWidget {
   final FormControl<T> controller;
   final String hint;
 
   final Widget? suffixIcon;
   final Widget? prefixIcon;
+  final ValidationMessagesMap? validationMessages;
 
   const CustomTextField({
     required this.controller,
     required this.hint,
     this.suffixIcon,
     this.prefixIcon,
+    this.validationMessages,
     super.key,
   });
 
@@ -22,6 +26,7 @@ class CustomTextField<T> extends StatelessWidget {
     return ReactiveTextField(
       formControl: controller,
       cursorColor: AppColors.primary,
+      validationMessages: validationMessages,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
@@ -40,6 +45,12 @@ class CustomTextField<T> extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: AppColors.error,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: AppColors.error,
           ),

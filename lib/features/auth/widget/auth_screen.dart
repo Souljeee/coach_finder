@@ -3,6 +3,7 @@ import 'package:coach_finder/common/theme/colors.dart';
 import 'package:coach_finder/common/widgets/custom_elevated_button.dart';
 import 'package:coach_finder/common/widgets/custom_text_field.dart';
 import 'package:coach_finder/features/auth/widget/account_type_scope.dart';
+import 'package:coach_finder/features/auth/widget/auth_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -46,8 +47,16 @@ class _AccountTypeSelector extends StatefulWidget {
 }
 
 class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
-  final FormControl<String> emailController = FormControl();
-  final FormControl<String> passwordController = FormControl();
+  final FormControl<String> emailController = FormControl(
+    validators: [
+      Validators.required
+    ],
+  );
+  final FormControl<String> passwordController = FormControl(
+      validators: [
+        Validators.required
+      ]
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +67,9 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
             Expanded(
               child: _TypeSelectionButton(
                 title: 'Спортсмен',
-                isSelected: AccountTypeScope.of(context).isClient,
+                isSelected: AccountTypeScope
+                    .of(context)
+                    .isClient,
                 onSelect: () {
                   AccountTypeScope.of(context)
                       .setAccountType(AccountType.client);
@@ -68,7 +79,9 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
             Expanded(
               child: _TypeSelectionButton(
                 title: 'Тренер',
-                isSelected: AccountTypeScope.of(context).isCoach,
+                isSelected: AccountTypeScope
+                    .of(context)
+                    .isCoach,
                 onSelect: () {
                   AccountTypeScope.of(context)
                       .setAccountType(AccountType.coach);
@@ -92,23 +105,53 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
                 controller: emailController,
                 hint: 'Эл. почта',
                 prefixIcon: const Icon(Icons.alternate_email),
+                validationMessages: {
+                  ValidationMessage.required: (
+                      _) => 'Введите адрес электронной почты'
+                },
               ),
               const SizedBox(height: 8),
               CustomTextField<String>(
                 controller: passwordController,
                 hint: 'Пароль',
                 prefixIcon: const Icon(Icons.lock),
+                validationMessages: {
+                  ValidationMessage.required: (
+                      _) => 'Введите пароль'
+                },
               ),
               const SizedBox(height: 16),
               CustomElevatedButton(
                 title: 'Войти',
                 maxSize: true,
-                onTap: () {},
+                onTap: () => _authUser(context: context),
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  void _authUser({required BuildContext context}) {
+    if (emailController.value == null) {
+      emailController.markAsTouched();
+
+      return;
+    }
+
+    if (passwordController.value == null) {
+      passwordController.markAsTouched();
+
+      return;
+    }
+
+    AuthScope.of(context).signInWithEmailAndPassword(
+      emailController.value!,
+      passwordController.value!,
+      AccountTypeScope
+          .of(context)
+          .accountType,
     );
   }
 }
