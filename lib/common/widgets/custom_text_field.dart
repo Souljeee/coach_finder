@@ -28,19 +28,22 @@ class CustomTextField<T> extends StatelessWidget {
       cursorColor: AppColors.primary,
       validationMessages: validationMessages,
       decoration: InputDecoration(
+        filled: true,
+        fillColor: AppColors.white,
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
         prefixIconColor: AppColors.primary,
         hintText: hint,
+        hintStyle: TextStyle(color: AppColors.text),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-            color: AppColors.primary,
+            color: Colors.transparent,
           ),
           borderRadius: BorderRadius.circular(16),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-            color: AppColors.primary,
+            color: Colors.transparent,
           ),
           borderRadius: BorderRadius.circular(16),
         ),

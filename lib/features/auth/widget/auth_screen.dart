@@ -19,18 +19,33 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: AccountTypeScope(
           child: Column(
             children: [
-              Spacer(),
-              Padding(
+              const SizedBox(height: 32),
+              Center(
+                child: Image.asset(
+                  'assets/app_logo.png',
+                  width: 150,
+                  height: 150,
+                ),
+              ),
+              const SizedBox(height: 42),
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: _AccountTypeSelector(),
               ),
-              Spacer(),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: CustomElevatedButton(
+                  title: 'Зарегистрироваться',
+                  onTap: (){},
+                ),
+              ),
             ],
           ),
         ),
@@ -48,15 +63,10 @@ class _AccountTypeSelector extends StatefulWidget {
 
 class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
   final FormControl<String> emailController = FormControl(
-    validators: [
-      Validators.required
-    ],
+    validators: [Validators.required],
   );
-  final FormControl<String> passwordController = FormControl(
-      validators: [
-        Validators.required
-      ]
-  );
+  final FormControl<String> passwordController =
+      FormControl(validators: [Validators.required]);
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +77,7 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
             Expanded(
               child: _TypeSelectionButton(
                 title: 'Спортсмен',
-                isSelected: AccountTypeScope
-                    .of(context)
-                    .isClient,
+                isSelected: AccountTypeScope.of(context).isClient,
                 onSelect: () {
                   AccountTypeScope.of(context)
                       .setAccountType(AccountType.client);
@@ -79,9 +87,7 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
             Expanded(
               child: _TypeSelectionButton(
                 title: 'Тренер',
-                isSelected: AccountTypeScope
-                    .of(context)
-                    .isCoach,
+                isSelected: AccountTypeScope.of(context).isCoach,
                 onSelect: () {
                   AccountTypeScope.of(context)
                       .setAccountType(AccountType.coach);
@@ -106,8 +112,8 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
                 hint: 'Эл. почта',
                 prefixIcon: const Icon(Icons.alternate_email),
                 validationMessages: {
-                  ValidationMessage.required: (
-                      _) => 'Введите адрес электронной почты'
+                  ValidationMessage.required: (_) =>
+                      'Введите адрес электронной почты'
                 },
               ),
               const SizedBox(height: 8),
@@ -116,8 +122,7 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
                 hint: 'Пароль',
                 prefixIcon: const Icon(Icons.lock),
                 validationMessages: {
-                  ValidationMessage.required: (
-                      _) => 'Введите пароль'
+                  ValidationMessage.required: (_) => 'Введите пароль'
                 },
               ),
               const SizedBox(height: 16),
@@ -149,9 +154,7 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
     AuthScope.of(context).signInWithEmailAndPassword(
       emailController.value!,
       passwordController.value!,
-      AccountTypeScope
-          .of(context)
-          .accountType,
+      AccountTypeScope.of(context).accountType,
     );
   }
 }
@@ -175,7 +178,7 @@ class _TypeSelectionButton extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.soft : AppColors.textSecondary,
+          color: isSelected ? AppColors.soft : AppColors.lightGray,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(12),
             topRight: Radius.circular(12),
@@ -184,7 +187,10 @@ class _TypeSelectionButton extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Center(
-            child: Text(title),
+            child: Text(
+              title,
+              style: const TextStyle(color: AppColors.white),
+            ),
           ),
         ),
       ),

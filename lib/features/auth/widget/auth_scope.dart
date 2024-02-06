@@ -93,7 +93,7 @@ class _AuthScopeState extends State<AuthScope> implements AuthController {
             authController: this,
             authState: state,
             child: state.map(
-              checkingAuth: (state) => Container(),
+              checkingAuth: (state) => Container(), // TODO: добавить onboarding
               authorized: (_) => widget.child,
               unauthorized: (_) => Navigator(
                 pages: const [

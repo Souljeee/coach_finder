@@ -5,14 +5,16 @@ class CustomElevatedButton extends StatelessWidget {
   final String title;
   final bool maxSize;
   final VoidCallback onTap;
-
   final bool isLoading;
+
+  final Color color;
 
   const CustomElevatedButton({
     required this.title,
     required this.onTap,
     this.isLoading = false,
     this.maxSize = false,
+    this.color = AppColors.primary,
     super.key,
   });
 
@@ -24,7 +26,7 @@ class CustomElevatedButton extends StatelessWidget {
         child: Ink(
           height: 56,
           width: maxSize ? double.infinity : null,
-          color: AppColors.primary,
+          color: color,
           child: InkWell(
             onTap: onTap,
             child: Align(
@@ -41,7 +43,7 @@ class CustomElevatedButton extends StatelessWidget {
                     : Text(
                         title,
                         style: const TextStyle(
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w600,
                           color: AppColors.white,
                           fontSize: 16,
                         ),
