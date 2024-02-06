@@ -1,6 +1,5 @@
 import 'package:coach_finder/common/dependencies/app_dependencies.dart';
 import 'package:coach_finder/common/router/app_routing.dart';
-import 'package:coach_finder/common/theme/colors.dart';
 import 'package:coach_finder/features/auth/widget/auth_scope.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +24,7 @@ class _AppState extends State<App> {
       child: GestureDetector(
         onTap: () => _focusNode.unfocus(),
         child: MaterialApp.router(
+          theme: ThemeData(fontFamily: 'RobotoMono'),
           routerConfig: router,
           builder: (context, child) {
             return AppDependenciesScope(
