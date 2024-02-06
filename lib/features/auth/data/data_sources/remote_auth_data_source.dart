@@ -1,4 +1,4 @@
-import 'package:coach_finder/common/data/account_type.dart';
+import 'package:coach_finder/features/auth/data/remote_models/login_payload.dart';
 import 'package:coach_finder/features/auth/data/remote_models/login_response.dart';
 import 'package:dio/dio.dart';
 
@@ -9,17 +9,11 @@ class RemoteAuthDataSource {
       : _networkClient = networkClient;
 
   Future<LoginResponse> login({
-    required String email,
-    required String password,
-    required AccountType accountType,
+    required LoginPayload loginPayload,
   }) async {
     final response = await _networkClient.post(
       '/login',
-      data: {
-        'email': email,
-        'password': password,
-        'accountType': accountType,
-      },
+      data: loginPayload.toJson(),
     );
 
     return LoginResponse.fromJson(response.data);

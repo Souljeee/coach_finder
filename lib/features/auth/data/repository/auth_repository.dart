@@ -1,6 +1,7 @@
 import 'package:coach_finder/common/data/account_type.dart';
 import 'package:coach_finder/common/data/secure_storage.dart';
 import 'package:coach_finder/features/auth/data/data_sources/remote_auth_data_source.dart';
+import 'package:coach_finder/features/auth/data/remote_models/login_payload.dart';
 import 'package:coach_finder/features/auth/data/remote_models/login_response.dart';
 
 class AuthRepository {
@@ -19,9 +20,11 @@ class AuthRepository {
     required AccountType accountType,
   }) async {
     final LoginResponse loginInfo = await _authRemoteDataSource.login(
-      email: email,
-      password: password,
-      accountType: accountType,
+      loginPayload: LoginPayload(
+        email: email,
+        password: password,
+        accountType: accountType,
+      ),
     );
 
     if (loginInfo.token != null) {
