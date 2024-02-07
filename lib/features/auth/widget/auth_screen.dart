@@ -24,6 +24,7 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SafeArea(
         child: AccountTypeScope(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 32),
               Center(
@@ -38,16 +39,31 @@ class _AuthScreenState extends State<AuthScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: _AccountTypeSelector(),
               ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: CustomElevatedButton(
-                  title: 'Зарегистрироваться',
-                  onTap: () {},
-                ),
-              ),
+              const SizedBox(height: 16),
+              const _CreateAccountButton(),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CreateAccountButton extends StatelessWidget {
+  const _CreateAccountButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 32),
+      child: Text(
+        'Создать аккаунт',
+        textAlign: TextAlign.end,
+        style: TextStyle(
+          fontSize: 16,
+          decoration: TextDecoration.underline,
+          color: AppColors.primary,
+          decorationColor: AppColors.primary,
         ),
       ),
     );
@@ -125,7 +141,7 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
                 hint: 'Пароль',
                 prefixIcon: const Icon(Icons.lock),
                 suffixIcon: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     setState(() {
                       hidePassword = !hidePassword;
                     });
