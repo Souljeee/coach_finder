@@ -1,6 +1,7 @@
 import 'package:coach_finder/common/dependencies/app_dependencies.dart';
 import 'package:coach_finder/common/router/app_routing.dart';
 import 'package:coach_finder/features/auth/widget/auth_scope.dart';
+import 'package:coach_finder/features/guards/widgets/guards.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -29,9 +30,11 @@ class _AppState extends State<App> {
           builder: (context, child) {
             return AppDependenciesScope(
               child: AuthScope(
-                child: Scaffold(
-                  body: SafeArea(
-                    child: child!,
+                child: Guards(
+                  child: Scaffold(
+                    body: SafeArea(
+                      child: child!,
+                    ),
                   ),
                 ),
               ),

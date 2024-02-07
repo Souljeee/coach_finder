@@ -1,7 +1,6 @@
 import 'package:coach_finder/common/data/account_type.dart';
 import 'package:coach_finder/common/dependencies/app_dependencies.dart';
 import 'package:coach_finder/features/auth/bloc/auth_bloc.dart';
-import 'package:coach_finder/features/auth/widget/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,7 +50,7 @@ class _AuthScopeState extends State<AuthScope> implements AuthController {
   void didChangeDependencies() {
     _authBloc = AuthBloc(
       authRepository: AppDependenciesScope.of(context).authRepository,
-    )..add(const AuthEvent.checkAuth());
+    );
 
     _authState = _authBloc.state;
 
@@ -92,18 +91,7 @@ class _AuthScopeState extends State<AuthScope> implements AuthController {
           return _AuthInherited(
             authController: this,
             authState: state,
-            child: state.map(
-              checkingAuth: (state) => Container(), // TODO: добавить onboarding
-              authorized: (_) => widget.child,
-              unauthorized: (_) => Navigator(
-                pages: const [
-                  MaterialPage(
-                    child: AuthScreen(),
-                  ),
-                ],
-                onPopPage: (_, __) => true,
-              ),
-            ),
+            child: widget.child,
           );
         },
       ),

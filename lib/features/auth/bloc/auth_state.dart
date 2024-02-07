@@ -5,7 +5,7 @@ typedef AuthStateMatch<T, S extends AuthState> = T Function(S state);
 sealed class AuthState extends Equatable {
   const AuthState();
 
-  const factory AuthState.checkingAuth() = _CheckingAuthState;
+  const factory AuthState.processing() = _ProcessingState;
 
   const factory AuthState.authorized() = _AuthorizedState;
 
@@ -16,36 +16,41 @@ sealed class AuthState extends Equatable {
         authorized: (_) => true,
       );
 
+  bool get isProcessing => maybeMap(
+    orElse: () => false,
+    processing: (_) => true,
+  );
+
   T map<T>({
-    required AuthStateMatch<T, _CheckingAuthState> checkingAuth,
+    required AuthStateMatch<T, _ProcessingState> processing,
     required AuthStateMatch<T, _AuthorizedState> authorized,
     required AuthStateMatch<T, _UnauthorizedState> unauthorized,
   }) =>
       switch (this) {
-        final _CheckingAuthState state => checkingAuth(state),
+        final _ProcessingState state => processing(state),
         final _AuthorizedState state => authorized(state),
         final _UnauthorizedState state => unauthorized(state),
       };
 
   T? mapOrNull<T>({
-    AuthStateMatch<T, _CheckingAuthState>? checkingAuth,
+    AuthStateMatch<T, _ProcessingState>? processing,
     AuthStateMatch<T, _AuthorizedState>? authorized,
     AuthStateMatch<T, _UnauthorizedState>? unauthorized,
   }) =>
       map<T?>(
-        checkingAuth: checkingAuth ?? (_) => null,
+        processing: processing ?? (_) => null,
         authorized: authorized ?? (_) => null,
         unauthorized: unauthorized ?? (_) => null,
       );
 
   T maybeMap<T>({
     required T Function() orElse,
-    AuthStateMatch<T, _CheckingAuthState>? checkingAuth,
+    AuthStateMatch<T, _ProcessingState>? processing,
     AuthStateMatch<T, _AuthorizedState>? authorized,
     AuthStateMatch<T, _UnauthorizedState>? unauthorized,
   }) =>
       map<T>(
-        checkingAuth: checkingAuth ?? (_) => orElse(),
+        processing: processing ?? (_) => orElse(),
         authorized: authorized ?? (_) => orElse(),
         unauthorized: unauthorized ?? (_) => orElse(),
       );
@@ -68,8 +73,8 @@ class _UnauthorizedState extends AuthState {
   List<Object?> get props => [message];
 }
 
-class _CheckingAuthState extends AuthState {
-  const _CheckingAuthState();
+class _ProcessingState extends AuthState {
+  const _ProcessingState();
 
   @override
   List<Object?> get props => [];

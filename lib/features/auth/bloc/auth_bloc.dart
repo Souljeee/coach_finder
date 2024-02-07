@@ -21,7 +21,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (event, emit) => event.map(
         signIn: (event) => _onSignIn(event, emit),
         signOut: (event) => _onSignOut(event, emit),
-        checkAuth: (event) => _onCheckAuth(emit),
       ),
     );
   }
@@ -31,7 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      emit(const AuthState.checkingAuth());
+      emit(const AuthState.processing());
 
       final LoginResponse loginInfo = await _authRepository.login(
         email: event.email,
@@ -55,39 +54,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e, s) {
       addError(e, s);
 
-      emit(const AuthState.checkingAuth());
+      emit(const AuthState.processing());
     }
   }
 
   Future<void> _onSignOut(_SignOutEvent event, Emitter<AuthState> emit) async {
     try {
+      emit(const AuthState.processing());
+
       _authRepository.logout(email: event.email);
 
       emit(const AuthState.unauthorized());
     } catch (e, s) {
       addError(e, s);
 
-      emit(const AuthState.unauthorized());
-    }
-  }
-
-  Future<void> _onCheckAuth(Emitter<AuthState> emit) async {
-    try{
-      emit(const AuthState.checkingAuth());
-
-      final hasAccess = await _authRepository.checkAuth();
-
-      if(hasAccess){
-        emit(const AuthState.authorized());
-
-        return;
-      }
-
-      emit(const AuthState.unauthorized());
-    }catch(e, s){
-      addError(e, s);
-
-      emit(const AuthState.checkingAuth());
+      emit(const AuthState.processing());
     }
   }
 }
