@@ -11,19 +11,24 @@ class CustomTextField<T> extends StatelessWidget {
   final Widget? suffixIcon;
   final Widget? prefixIcon;
   final ValidationMessagesMap? validationMessages;
+  final bool obscureText;
+  final Color? suffixIconColor;
 
   const CustomTextField({
     required this.controller,
     required this.hint,
     this.suffixIcon,
+    this.suffixIconColor,
     this.prefixIcon,
     this.validationMessages,
+    this.obscureText = false,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return ReactiveTextField(
+      obscureText: obscureText,
       formControl: controller,
       cursorColor: AppColors.primary,
       validationMessages: validationMessages,
@@ -31,10 +36,11 @@ class CustomTextField<T> extends StatelessWidget {
         filled: true,
         fillColor: AppColors.white,
         suffixIcon: suffixIcon,
+        suffixIconColor: suffixIconColor,
         prefixIcon: prefixIcon,
         prefixIconColor: AppColors.primary,
         hintText: hint,
-        hintStyle: TextStyle(color: AppColors.text),
+        hintStyle: const TextStyle(color: AppColors.text),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.transparent,

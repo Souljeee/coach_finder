@@ -43,7 +43,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 padding: const EdgeInsets.all(16),
                 child: CustomElevatedButton(
                   title: 'Зарегистрироваться',
-                  onTap: (){},
+                  onTap: () {},
                 ),
               ),
             ],
@@ -67,6 +67,8 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
   );
   final FormControl<String> passwordController =
       FormControl(validators: [Validators.required]);
+
+  bool hidePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +121,18 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
               const SizedBox(height: 8),
               CustomTextField<String>(
                 controller: passwordController,
+                obscureText: hidePassword,
                 hint: 'Пароль',
                 prefixIcon: const Icon(Icons.lock),
+                suffixIcon: GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      hidePassword = !hidePassword;
+                    });
+                  },
+                  child: const Icon(Icons.remove_red_eye),
+                ),
+                suffixIconColor: AppColors.textSecondary,
                 validationMessages: {
                   ValidationMessage.required: (_) => 'Введите пароль'
                 },
