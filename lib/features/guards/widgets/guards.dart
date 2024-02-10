@@ -1,6 +1,7 @@
 import 'package:coach_finder/common/dependencies/app_dependencies.dart';
 import 'package:coach_finder/features/auth/widget/auth_screen.dart';
 import 'package:coach_finder/features/guards/bloc/guards_bloc.dart';
+import 'package:coach_finder/features/sign_up/widgets/sing_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,11 +53,23 @@ class AuthGuard extends StatelessWidget {
     }
 
     return Navigator(
-      pages: const [
-        MaterialPage(
-          child: AuthScreen(),
-        ),
-      ],
+      onGenerateRoute: (routeSettings) {
+        switch (routeSettings.name) {
+          case '/sign_in':
+            return MaterialPageRoute(
+              builder: (context) => const AuthScreen(),
+            );
+          case '/sign_up':
+            return MaterialPageRoute(
+              builder: (context) => const SignUpScreen(),
+            );
+          default:
+            return MaterialPageRoute(
+              builder: (context) => Container(), // TODO: добавить неизвестный экран
+            );
+        }
+      },
+      initialRoute: '/sign_in',
       onPopPage: (_, __) => true,
     );
   }

@@ -54,16 +54,19 @@ class _CreateAccountButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 32),
-      child: Text(
-        'Создать аккаунт',
-        textAlign: TextAlign.end,
-        style: TextStyle(
-          fontSize: 16,
-          decoration: TextDecoration.underline,
-          color: AppColors.primary,
-          decorationColor: AppColors.primary,
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pushNamed('/sign_up'),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 32),
+        child: Text(
+          'Создать аккаунт',
+          textAlign: TextAlign.end,
+          style: TextStyle(
+            fontSize: 16,
+            decoration: TextDecoration.underline,
+            color: AppColors.primary,
+            decorationColor: AppColors.primary,
+          ),
         ),
       ),
     );
@@ -117,7 +120,7 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
-            color: AppColors.soft,
+            color: AppColors.secondary,
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(12),
               bottomRight: Radius.circular(12),
@@ -207,7 +210,7 @@ class _TypeSelectionButton extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.soft : AppColors.lightGray,
+          color: isSelected ? AppColors.secondary : AppColors.lightGray,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(12),
             topRight: Radius.circular(12),

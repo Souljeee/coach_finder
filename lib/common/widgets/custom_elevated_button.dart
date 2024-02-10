@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CustomElevatedButton extends StatelessWidget {
   final String title;
   final bool maxSize;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool isLoading;
 
   final Color color;
@@ -26,7 +26,7 @@ class CustomElevatedButton extends StatelessWidget {
         child: Ink(
           height: 56,
           width: maxSize ? double.infinity : null,
-          color: color,
+          color: onTap != null ? color : AppColors.lightGray,
           child: InkWell(
             onTap: onTap,
             child: Align(

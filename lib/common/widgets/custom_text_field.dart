@@ -13,6 +13,8 @@ class CustomTextField<T> extends StatelessWidget {
   final ValidationMessagesMap? validationMessages;
   final bool obscureText;
   final Color? suffixIconColor;
+  final Color enabledBorderColor;
+  final Color focusedBorderColor;
 
   const CustomTextField({
     required this.controller,
@@ -22,6 +24,8 @@ class CustomTextField<T> extends StatelessWidget {
     this.prefixIcon,
     this.validationMessages,
     this.obscureText = false,
+    this.enabledBorderColor = AppColors.secondary,
+    this.focusedBorderColor = AppColors.secondary,
     super.key,
   });
 
@@ -42,14 +46,14 @@ class CustomTextField<T> extends StatelessWidget {
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.text),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
+          borderSide: BorderSide(
+            color: enabledBorderColor,
           ),
           borderRadius: BorderRadius.circular(16),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
+          borderSide: BorderSide(
+            color: focusedBorderColor,
           ),
           borderRadius: BorderRadius.circular(16),
         ),
