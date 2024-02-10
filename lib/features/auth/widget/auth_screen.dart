@@ -157,6 +157,7 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
               CustomElevatedButton(
                 title: 'Войти',
                 maxSize: true,
+                isLoading: AuthScope.of(context).isProcessing,
                 onTap: () => _authUser(context: context),
               ),
             ],

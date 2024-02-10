@@ -14,6 +14,8 @@ abstract interface class AuthController {
   void signOut(String email);
 
   bool get authenticated;
+
+  bool get isProcessing;
 }
 
 class AuthScope extends StatefulWidget {
@@ -104,6 +106,9 @@ class _AuthScopeState extends State<AuthScope> implements AuthController {
 
     super.dispose();
   }
+
+  @override
+  bool get isProcessing => _authState.isProcessing;
 }
 
 class _AuthInherited extends InheritedWidget {
