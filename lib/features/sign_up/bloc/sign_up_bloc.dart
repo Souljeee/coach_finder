@@ -65,7 +65,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         return;
       }
 
-      emit(const SignUpState.codeCreated());
+      emit(SignUpState.codeCreated(email: event.email));
     } catch (e, s) {
       addError(e, s);
 

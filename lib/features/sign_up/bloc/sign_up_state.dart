@@ -9,7 +9,7 @@ sealed class SignUpState extends Equatable {
 
   const factory SignUpState.codeCreating() = _CodeCreatingState;
 
-  const factory SignUpState.codeCreated() = _CodeCreatedState;
+  const factory SignUpState.codeCreated({required String email}) = _CodeCreatedState;
 
   const factory SignUpState.codeCreatingError(
       {required CodeCreatingErrorType errorType}) = _CodeCreatingErrorState;
@@ -101,10 +101,12 @@ class _CodeCreatingState extends SignUpState {
 }
 
 class _CodeCreatedState extends SignUpState {
-  const _CodeCreatedState();
+  final String email;
+
+  const _CodeCreatedState({required this.email});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [email];
 }
 
 class _CodeCreatingErrorState extends SignUpState {

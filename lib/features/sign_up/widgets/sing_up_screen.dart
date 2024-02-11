@@ -6,8 +6,10 @@ import 'package:coach_finder/common/widgets/custom_text_field.dart';
 import 'package:coach_finder/features/sign_up/bloc/models/errors_type_enums.dart';
 import 'package:coach_finder/features/sign_up/bloc/sign_up_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:collection/collection.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
@@ -19,7 +21,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _pageController = PageController(initialPage: 0);
+  final _pageController = PageController(initialPage: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -233,19 +235,144 @@ class _InfoInputSlideState extends State<_InfoInputSlide> {
   }
 }
 
-class _CodeInputSlide extends StatelessWidget {
+class _CodeInputSlide extends StatefulWidget {
   const _CodeInputSlide({
     super.key,
   });
 
   @override
+  State<_CodeInputSlide> createState() => _CodeInputSlideState();
+}
+
+class _CodeInputSlideState extends State<_CodeInputSlide> {
+  String? email;
+
+  @override
+  void initState() {
+    super.initState();
+
+    email = BlocProvider.of<SignUpBloc>(context).state.mapOrNull(
+          codeCreated: (state) => state.email,
+        );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Center(
-          child: Text('CODE INPUT'),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Отправили код подтверждения на $email'),
+          const SizedBox(height: 32),
+          _CodeInput(),
+        ],
+      ),
+    );
+  }
+}
+
+class _CodeInput extends StatefulWidget {
+  const _CodeInput({
+    super.key,
+  });
+
+  @override
+  State<_CodeInput> createState() => _CodeInputState();
+}
+
+class _CodeInputState extends State<_CodeInput> {
+  final _firstDigitController = FormControl<String>();
+  final _secondDigitController = FormControl<String>();
+  final _thirdDigitController = FormControl<String>();
+  final _fourthDigitController = FormControl<String>();
+  final _fifthDigitController = FormControl<String>();
+  final _sixthDigitController = FormControl<String>();
+
+  late final List<FormControl<String>> controllers = [
+    _firstDigitController,
+    _secondDigitController,
+    _thirdDigitController,
+    _fourthDigitController,
+    _fifthDigitController,
+    _sixthDigitController,
+  ];
+
+  late final _codeInputFormGroup = FormGroup({
+    'first_digit': _firstDigitController,
+    'second_digit': _secondDigitController,
+    'third_digit': _thirdDigitController,
+    'fourth_digit': _fourthDigitController,
+    'fifth_digit': _fifthDigitController,
+    'sixth_digit': _sixthDigitController,
+  });
+
+  @override
+  void initState() {
+    super.initState();
+
+    _sixthDigitController.valueChanges.listen(
+      (value) {
+        if(value != null){
+          BlocProvider.of<SignUpBloc>(context);
+        }
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ReactiveForm(
+      formGroup: _codeInputFormGroup,
+      child: Row(
+        children: controllers
+            .mapIndexed(
+              (index, controller) => Expanded(
+                child: _DigitInputField(
+                  index: index,
+                  controller: controller,
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+class _DigitInputField extends StatelessWidget {
+  final int index;
+  final FormControl<String> controller;
+
+  const _DigitInputField({
+    required this.index,
+    required this.controller,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: ReactiveTextField(
+        onChanged: (controller) {
+          if (controller.value != null &&
+              controller.value!.isNotEmpty &&
+              index != 5) {
+            FocusScope.of(context).nextFocus();
+
+            return;
+          }
+
+          FocusScope.of(context).unfocus();
+        },
+        formControl: controller,
+        textAlign: TextAlign.center,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(1),
+          FilteringTextInputFormatter.digitsOnly,
+        ],
+      ),
     );
   }
 }
