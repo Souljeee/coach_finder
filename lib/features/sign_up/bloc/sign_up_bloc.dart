@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:coach_finder/common/data/account_type.dart';
+import 'package:coach_finder/features/sign_up/bloc/models/errors_type_enums.dart';
+import 'package:coach_finder/features/sign_up/data/local_models/create_account_status.dart';
+import 'package:coach_finder/features/sign_up/data/remote_models/create_account_payload.dart';
+import 'package:coach_finder/features/sign_up/data/repository/sign_up_repository.dart';
 import 'package:equatable/equatable.dart';
 
 part 'sign_up_event.dart';
@@ -9,7 +13,11 @@ part 'sign_up_event.dart';
 part 'sign_up_state.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
-  SignUpBloc() : super(const SignUpState.idle()) {
+  final SignUpRepository _signUpRepository;
+
+  SignUpBloc({required SignUpRepository signUpRepository})
+      : _signUpRepository = signUpRepository,
+        super(const SignUpState.idle()) {
     on<SignUpEvent>(
       (event, emit) => event.map(
         createCodeRequested: (event) => _onCreateCodeRequested(event, emit),
@@ -23,15 +31,49 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     Emitter<SignUpState> emit,
   ) async {
     try {
-      emit(const SignUpState.processing());
+      emit(const SignUpState.codeCreating());
 
-      // do something
+      final CreateAccountStatus accountCreatedStatus =
+          await _signUpRepository.createAccount(
+        createAccountPayload: CreateAccountPayload(
+          email: event.email,
+          password: event.password,
+          accountType: event.accountType,
+        ),
+      );
+
+      if (accountCreatedStatus == CreateAccountStatus.USER_EXIST) {
+        emit(
+          const SignUpState.codeCreatingError(
+            errorType: CodeCreatingErrorType.USER_EXIST,
+          ),
+        );
+
+        return;
+      }
+
+      final bool isCodeSent =
+          await _signUpRepository.createCode(email: event.email);
+
+      if (!isCodeSent) {
+        emit(
+          const SignUpState.codeCreatingError(
+            errorType: CodeCreatingErrorType.UNDEFINED,
+          ),
+        );
+
+        return;
+      }
 
       emit(const SignUpState.codeCreated());
     } catch (e, s) {
       addError(e, s);
 
-      emit(const SignUpState.error());
+      emit(
+        const SignUpState.codeCreatingError(
+          errorType: CodeCreatingErrorType.UNDEFINED,
+        ),
+      );
     }
   }
 

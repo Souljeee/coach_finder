@@ -1,8 +1,12 @@
 import 'package:coach_finder/common/data/account_type.dart';
+import 'package:coach_finder/common/dependencies/app_dependencies.dart';
 import 'package:coach_finder/common/theme/colors.dart';
 import 'package:coach_finder/common/widgets/custom_elevated_button.dart';
 import 'package:coach_finder/common/widgets/custom_text_field.dart';
+import 'package:coach_finder/features/sign_up/bloc/models/errors_type_enums.dart';
+import 'package:coach_finder/features/sign_up/bloc/sign_up_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -15,6 +19,70 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final _pageController = PageController(initialPage: 0);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Регистрация',
+          style: TextStyle(
+            color: AppColors.secondary,
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      body: BlocProvider(
+        create: (context) => SignUpBloc(
+          signUpRepository: AppDependenciesScope.of(context).signUpRepository,
+        ),
+        child: BlocListener<SignUpBloc, SignUpState>(
+          listener: (context, state) {
+            state.mapOrNull(
+              codeCreatingError: (state) {
+                if (state.errorType == CodeCreatingErrorType.UNDEFINED) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Произошла неизвестная ошибка'),
+                    ),
+                  );
+                }
+              },
+              codeCreated: (_) {
+                _pageController.animateToPage(
+                  1,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                );
+              },
+            );
+          },
+          child: SafeArea(
+            child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              children: [
+                _InfoInputSlide(),
+                _CodeInputSlide(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoInputSlide extends StatefulWidget {
+  const _InfoInputSlide();
+
+  @override
+  State<_InfoInputSlide> createState() => _InfoInputSlideState();
+}
+
+class _InfoInputSlideState extends State<_InfoInputSlide> {
   final _emailController =
       FormControl<String>(validators: [Validators.required]);
   final _passwordController =
@@ -31,128 +99,160 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool hidePassword = true;
   bool hideRepeatPassword = true;
 
-  bool showError = false;
+  String? errorText;
 
   AccountType _selectedType = AccountType.client;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Регистрация',
-          style: TextStyle(
-            color: AppColors.secondary,
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: ReactiveForm(
+    return BlocListener<SignUpBloc, SignUpState>(
+      listener: (context, state) {
+        state.mapOrNull(
+          codeCreatingError: (state) {
+            if (state.errorType == CodeCreatingErrorType.USER_EXIST) {
+              setState(() {
+                errorText = 'Пользователь с такой эл. почтой уже существует';
+              });
+            }
+          },
+        );
+      },
+      child: ReactiveForm(
         formGroup: _signUpFormGroup,
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomTextField(
-                  controller: _emailController,
-                  hint: 'Эл.почта',
-                  validationMessages: {
-                    ValidationMessage.required: (_) =>
-                        'Введите адрес электронной почты'
-                  },
-                ),
-                const SizedBox(height: 8),
-                CustomTextField(
-                  obscureText: hidePassword,
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        hidePassword = !hidePassword;
-                      });
-                    },
-                    child: const Icon(Icons.remove_red_eye),
-                  ),
-                  controller: _passwordController,
-                  hint: 'Пароль',
-                  validationMessages: {
-                    ValidationMessage.required: (_) => 'Введите пароль'
-                  },
-                ),
-                const SizedBox(height: 8),
-                CustomTextField(
-                  obscureText: hideRepeatPassword,
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        hideRepeatPassword = !hideRepeatPassword;
-                      });
-                    },
-                    child: const Icon(Icons.remove_red_eye),
-                  ),
-                  controller: _passwordRepeatController,
-                  hint: 'Повторите пароль',
-                  validationMessages: {
-                    ValidationMessage.required: (_) => 'Повторите пароль'
-                  },
-                ),
-                const SizedBox(height: 16),
-                _AnimatedAccountTypeSelectToggle(
-                  onTypeChanged: (type){
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextField(
+                controller: _emailController,
+                hint: 'Эл.почта',
+                validationMessages: {
+                  ValidationMessage.required: (_) =>
+                      'Введите адрес электронной почты'
+                },
+              ),
+              const SizedBox(height: 8),
+              CustomTextField(
+                obscureText: hidePassword,
+                suffixIcon: GestureDetector(
+                  onTap: () {
                     setState(() {
-                      _selectedType = type;
+                      hidePassword = !hidePassword;
                     });
                   },
+                  child: const Icon(Icons.remove_red_eye),
                 ),
-                if (showError) ...[
-                  const SizedBox(height: 16),
-                  const Center(
-                    child: Text(
-                      'Пароли должны совпадать',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.error,
-                        fontSize: 16,
-                      ),
+                controller: _passwordController,
+                hint: 'Пароль',
+                validationMessages: {
+                  ValidationMessage.required: (_) => 'Введите пароль'
+                },
+              ),
+              const SizedBox(height: 8),
+              CustomTextField(
+                obscureText: hideRepeatPassword,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      hideRepeatPassword = !hideRepeatPassword;
+                    });
+                  },
+                  child: const Icon(Icons.remove_red_eye),
+                ),
+                controller: _passwordRepeatController,
+                hint: 'Повторите пароль',
+                validationMessages: {
+                  ValidationMessage.required: (_) => 'Повторите пароль'
+                },
+              ),
+              const SizedBox(height: 16),
+              _AnimatedAccountTypeSelectToggle(
+                onTypeChanged: (type) {
+                  setState(() {
+                    _selectedType = type;
+                  });
+                },
+              ),
+              if (errorText != null) ...[
+                const SizedBox(height: 16),
+                Center(
+                  child: Text(
+                    errorText!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.error,
+                      fontSize: 16,
                     ),
                   ),
-                ],
-                const SizedBox(height: 16),
-                ReactiveFormConsumer(
-                  builder: (context, form, child) {
-                    return CustomElevatedButton(
-                      title: 'Зарегистрироваться',
-                      onTap: form.valid ? _onSignUpTap : null,
-                    );
-                  },
                 ),
               ],
-            ),
+              const SizedBox(height: 16),
+              BlocBuilder<SignUpBloc, SignUpState>(
+                builder: (context, state) {
+                  return ReactiveFormConsumer(
+                    builder: (context, form, child) {
+                      return CustomElevatedButton(
+                        title: 'Зарегистрироваться',
+                        onTap: form.valid
+                            ? () => _onSignUpTap(context: context)
+                            : null,
+                        isLoading: state.isCodeCreating,
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void _onSignUpTap() {
+  void _onSignUpTap({required BuildContext context}) {
     setState(() {
-      showError = false;
+      errorText = null;
     });
 
     if (_passwordRepeatController.value != _passwordController.value) {
       setState(() {
-        showError = true;
+        errorText = 'Пароли должны совпадать';
       });
 
       return;
     }
+
+    BlocProvider.of<SignUpBloc>(context).add(
+      SignUpEvent.createCodeRequested(
+        email: _emailController.value!,
+        password: _passwordController.value!,
+        accountType: _selectedType,
+      ),
+    );
+  }
+}
+
+class _CodeInputSlide extends StatelessWidget {
+  const _CodeInputSlide({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Center(
+          child: Text('CODE INPUT'),
+        ),
+      ],
+    );
   }
 }
 
 class _AnimatedAccountTypeSelectToggle extends StatefulWidget {
   final void Function(AccountType type) onTypeChanged;
+
   const _AnimatedAccountTypeSelectToggle({
     required this.onTypeChanged,
   });
@@ -180,7 +280,7 @@ class _AnimatedAccountTypeSelectToggleState
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       _selectedType = AccountType.client;
                       widget.onTypeChanged(_selectedType);
                       setState(() {});
@@ -200,7 +300,7 @@ class _AnimatedAccountTypeSelectToggleState
                 ),
                 Expanded(
                   child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       _selectedType = AccountType.coach;
                       widget.onTypeChanged(_selectedType);
                       setState(() {});

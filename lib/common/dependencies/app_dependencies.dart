@@ -2,6 +2,8 @@ import 'package:coach_finder/common/data/secure_storage.dart';
 import 'package:coach_finder/common/network/network.dart';
 import 'package:coach_finder/features/auth/data/data_sources/remote_auth_data_source.dart';
 import 'package:coach_finder/features/auth/data/repository/auth_repository.dart';
+import 'package:coach_finder/features/sign_up/data/data_sources/sign_up_data_source.dart';
+import 'package:coach_finder/features/sign_up/data/repository/sign_up_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ class AppDependenciesScope extends StatefulWidget {
 
   static AppDependencies of(BuildContext context) {
     final _AppDependenciesInh? result =
-        context.dependOnInheritedWidgetOfExactType<_AppDependenciesInh>();
+        context.getInheritedWidgetOfExactType<_AppDependenciesInh>();
 
     assert(result != null, 'No AppDependenciesScope found in context');
 
@@ -41,11 +43,21 @@ class _AppDependenciesScopeState extends State<AppDependenciesScope> {
     secureStorage: _secureStorage,
   );
 
+  late final SignUpDataSource _signUpDataSource = SignUpDataSource(
+    networkClient: _networkClient,
+  );
+
+  late final SignUpRepository _signUpRepository = SignUpRepository(
+    signUpDataSource: _signUpDataSource,
+  );
+
   late final _appDependencies = AppDependencies(
     secureStorage: _secureStorage,
     networkClient: _networkClient,
     authRepository: _authRepository,
     remoteAuthDataSource: _remoteAuthDataSource,
+    signUpDataSource: _signUpDataSource,
+    signUpRepository: _signUpRepository,
   );
 
   @override
@@ -78,11 +90,17 @@ class AppDependencies extends Equatable {
   final RemoteAuthDataSource remoteAuthDataSource;
   final AuthRepository authRepository;
 
+  final SignUpDataSource signUpDataSource;
+
+  final SignUpRepository signUpRepository;
+
   const AppDependencies({
     required this.secureStorage,
     required this.networkClient,
     required this.remoteAuthDataSource,
     required this.authRepository,
+    required this.signUpDataSource,
+    required this.signUpRepository,
   });
 
   @override
@@ -91,5 +109,7 @@ class AppDependencies extends Equatable {
         networkClient,
         remoteAuthDataSource,
         authRepository,
+        signUpDataSource,
+        signUpRepository,
       ];
 }
