@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:coach_finder/common/data/account_type.dart';
 import 'package:coach_finder/features/sign_up/bloc/models/errors_type_enums.dart';
+import 'package:coach_finder/features/sign_up/data/local_models/confirm_code_status.dart';
 import 'package:coach_finder/features/sign_up/data/local_models/create_account_status.dart';
 import 'package:coach_finder/features/sign_up/data/remote_models/create_account_payload.dart';
 import 'package:coach_finder/features/sign_up/data/repository/sign_up_repository.dart';
@@ -33,8 +34,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     try {
       emit(const SignUpState.codeCreating());
 
-      final CreateAccountStatus accountCreatedStatus =
-          await _signUpRepository.createAccount(
+      final CreateAccountStatus accountCreatedStatus = await _signUpRepository.createAccount(
         createAccountPayload: CreateAccountPayload(
           email: event.email,
           password: event.password,
@@ -52,8 +52,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         return;
       }
 
-      final bool isCodeSent =
-          await _signUpRepository.createCode(email: event.email);
+      final bool isCodeSent = await _signUpRepository.createCode(email: event.email);
 
       if (!isCodeSent) {
         emit(
@@ -84,13 +83,22 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     try {
       emit(const SignUpState.codeConfirming());
 
-      // do something
+      await Future.delayed(const Duration(seconds: 1));
 
-      emit(const SignUpState.codeConfirming());
+      final ConfirmCodeStatus confirmationStatus = await _signUpRepository.confirmCode(
+        email: event.email,
+        code: event.code,
+      );
+
+      if(confirmationStatus == ConfirmCodeStatus.WRONG_CODE){
+        emit(const SignUpState.confirmationError(reason: CodeConfirmingErrorType.WRONG_CODE));
+      }
+
+      emit(const SignUpState.codeConfirmed());
     } catch (e, s) {
       addError(e, s);
 
-      emit(const SignUpState.error());
+      emit(const SignUpState.confirmationError(reason: CodeConfirmingErrorType.UNDEFINED));
     }
   }
 }

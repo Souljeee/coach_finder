@@ -9,7 +9,8 @@ sealed class SignUpState extends Equatable {
 
   const factory SignUpState.codeCreating() = _CodeCreatingState;
 
-  const factory SignUpState.codeCreated({required String email}) = _CodeCreatedState;
+  const factory SignUpState.codeCreated({required String email}) =
+      _CodeCreatedState;
 
   const factory SignUpState.codeCreatingError(
       {required CodeCreatingErrorType errorType}) = _CodeCreatingErrorState;
@@ -18,11 +19,16 @@ sealed class SignUpState extends Equatable {
 
   const factory SignUpState.codeConfirmed() = _CodeConfirmedState;
 
-  const factory SignUpState.error() = _ErrorState;
+  const factory SignUpState.confirmationError({required CodeConfirmingErrorType reason}) = _ConfirmationErrorState;
 
   bool get isCodeCreating => maybeMap(
         orElse: () => false,
         codeCreating: (_) => true,
+      );
+
+  bool get isCodeConfirming => maybeMap(
+        orElse: () => false,
+        codeConfirming: (_) => true,
       );
 
   T map<T>({
@@ -32,7 +38,7 @@ sealed class SignUpState extends Equatable {
     required SignUpStateMatch<T, _CodeCreatingErrorState> codeCreatingError,
     required SignUpStateMatch<T, _CodeConfirmingState> codeConfirming,
     required SignUpStateMatch<T, _CodeConfirmedState> codeConfirmed,
-    required SignUpStateMatch<T, _ErrorState> error,
+    required SignUpStateMatch<T, _ConfirmationErrorState> confirmationError,
   }) =>
       switch (this) {
         final _IdleState state => idle(state),
@@ -41,7 +47,7 @@ sealed class SignUpState extends Equatable {
         final _CodeCreatingErrorState state => codeCreatingError(state),
         final _CodeConfirmingState state => codeConfirming(state),
         final _CodeConfirmedState state => codeConfirmed(state),
-        final _ErrorState state => error(state),
+        final _ConfirmationErrorState state => confirmationError(state),
       };
 
   T? mapOrNull<T>({
@@ -51,7 +57,7 @@ sealed class SignUpState extends Equatable {
     SignUpStateMatch<T, _CodeCreatingErrorState>? codeCreatingError,
     SignUpStateMatch<T, _CodeConfirmingState>? codeConfirming,
     SignUpStateMatch<T, _CodeConfirmedState>? codeConfirmed,
-    SignUpStateMatch<T, _ErrorState>? error,
+    SignUpStateMatch<T, _ConfirmationErrorState>? confirmationError,
   }) =>
       map<T?>(
         idle: idle ?? (_) => null,
@@ -60,7 +66,7 @@ sealed class SignUpState extends Equatable {
         codeCreatingError: codeCreatingError ?? (_) => null,
         codeConfirming: codeConfirming ?? (_) => null,
         codeConfirmed: codeConfirmed ?? (_) => null,
-        error: error ?? (_) => null,
+        confirmationError: confirmationError ?? (_) => null,
       );
 
   T maybeMap<T>({
@@ -71,7 +77,7 @@ sealed class SignUpState extends Equatable {
     SignUpStateMatch<T, _CodeCreatingErrorState>? codeCreatingError,
     SignUpStateMatch<T, _CodeConfirmingState>? codeConfirming,
     SignUpStateMatch<T, _CodeConfirmedState>? codeConfirmed,
-    SignUpStateMatch<T, _ErrorState>? error,
+    SignUpStateMatch<T, _ConfirmationErrorState>? confirmationError,
   }) =>
       map<T>(
         idle: idle ?? (_) => orElse(),
@@ -80,7 +86,7 @@ sealed class SignUpState extends Equatable {
         codeCreatingError: codeCreatingError ?? (_) => orElse(),
         codeConfirming: codeConfirming ?? (_) => orElse(),
         codeConfirmed: codeConfirmed ?? (_) => orElse(),
-        error: error ?? (_) => orElse(),
+        confirmationError: confirmationError ?? (_) => orElse(),
       );
 }
 
@@ -132,9 +138,10 @@ class _CodeConfirmedState extends SignUpState {
   List<Object?> get props => [];
 }
 
-class _ErrorState extends SignUpState {
-  const _ErrorState();
+class _ConfirmationErrorState extends SignUpState {
+  final CodeConfirmingErrorType reason;
+  const _ConfirmationErrorState({required this.reason});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [reason];
 }

@@ -21,7 +21,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _pageController = PageController(initialPage: 1);
+  final _pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +43,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: BlocListener<SignUpBloc, SignUpState>(
           listener: (context, state) {
             state.mapOrNull(
+              confirmationError: (state) {
+                if (state.reason == CodeConfirmingErrorType.UNDEFINED) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Произошла неизвестная ошибка'),
+                    ),
+                  );
+                }
+              },
               codeCreatingError: (state) {
                 if (state.errorType == CodeCreatingErrorType.UNDEFINED) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -65,7 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: PageView(
               physics: const NeverScrollableScrollPhysics(),
               controller: _pageController,
-              children: [
+              children: const [
                 _InfoInputSlide(),
                 _CodeInputSlide(),
               ],
@@ -85,12 +94,9 @@ class _InfoInputSlide extends StatefulWidget {
 }
 
 class _InfoInputSlideState extends State<_InfoInputSlide> {
-  final _emailController =
-      FormControl<String>(validators: [Validators.required]);
-  final _passwordController =
-      FormControl<String>(validators: [Validators.required]);
-  final _passwordRepeatController =
-      FormControl<String>(validators: [Validators.required]);
+  final _emailController = FormControl<String>(validators: [Validators.required]);
+  final _passwordController = FormControl<String>(validators: [Validators.required]);
+  final _passwordRepeatController = FormControl<String>(validators: [Validators.required]);
 
   late final FormGroup _signUpFormGroup = FormGroup({
     'email': _emailController,
@@ -130,8 +136,7 @@ class _InfoInputSlideState extends State<_InfoInputSlide> {
                 controller: _emailController,
                 hint: 'Эл.почта',
                 validationMessages: {
-                  ValidationMessage.required: (_) =>
-                      'Введите адрес электронной почты'
+                  ValidationMessage.required: (_) => 'Введите адрес электронной почты'
                 },
               ),
               const SizedBox(height: 8),
@@ -147,9 +152,7 @@ class _InfoInputSlideState extends State<_InfoInputSlide> {
                 ),
                 controller: _passwordController,
                 hint: 'Пароль',
-                validationMessages: {
-                  ValidationMessage.required: (_) => 'Введите пароль'
-                },
+                validationMessages: {ValidationMessage.required: (_) => 'Введите пароль'},
               ),
               const SizedBox(height: 8),
               CustomTextField(
@@ -164,9 +167,7 @@ class _InfoInputSlideState extends State<_InfoInputSlide> {
                 ),
                 controller: _passwordRepeatController,
                 hint: 'Повторите пароль',
-                validationMessages: {
-                  ValidationMessage.required: (_) => 'Повторите пароль'
-                },
+                validationMessages: {ValidationMessage.required: (_) => 'Повторите пароль'},
               ),
               const SizedBox(height: 16),
               _AnimatedAccountTypeSelectToggle(
@@ -196,9 +197,7 @@ class _InfoInputSlideState extends State<_InfoInputSlide> {
                     builder: (context, form, child) {
                       return CustomElevatedButton(
                         title: 'Зарегистрироваться',
-                        onTap: form.valid
-                            ? () => _onSignUpTap(context: context)
-                            : null,
+                        onTap: form.valid ? () => _onSignUpTap(context: context) : null,
                         isLoading: state.isCodeCreating,
                       );
                     },
@@ -225,6 +224,8 @@ class _InfoInputSlideState extends State<_InfoInputSlide> {
       return;
     }
 
+    FocusScope.of(context).unfocus();
+
     BlocProvider.of<SignUpBloc>(context).add(
       SignUpEvent.createCodeRequested(
         email: _emailController.value!,
@@ -236,9 +237,7 @@ class _InfoInputSlideState extends State<_InfoInputSlide> {
 }
 
 class _CodeInputSlide extends StatefulWidget {
-  const _CodeInputSlide({
-    super.key,
-  });
+  const _CodeInputSlide();
 
   @override
   State<_CodeInputSlide> createState() => _CodeInputSlideState();
@@ -260,61 +259,89 @@ class _CodeInputSlideState extends State<_CodeInputSlide> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Отправили код подтверждения на $email'),
-          const SizedBox(height: 32),
-          _CodeInput(),
-        ],
+      child: BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Отправили код подтверждения на $email',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 32),
+              _CodeInput(email: email!),
+              if (state.isCodeConfirming) ...[
+                const SizedBox(height: 16),
+                const Center(
+                  child: SizedBox.square(
+                    dimension: 30,
+                    child: CircularProgressIndicator(
+                      color: AppColors.secondary,
+                      strokeWidth: 3,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          );
+        },
       ),
     );
   }
 }
 
 class _CodeInput extends StatefulWidget {
-  const _CodeInput({
-    super.key,
-  });
+  final String email;
+
+  const _CodeInput({required this.email});
 
   @override
   State<_CodeInput> createState() => _CodeInputState();
 }
 
 class _CodeInputState extends State<_CodeInput> {
-  final _firstDigitController = FormControl<String>();
-  final _secondDigitController = FormControl<String>();
-  final _thirdDigitController = FormControl<String>();
-  final _fourthDigitController = FormControl<String>();
-  final _fifthDigitController = FormControl<String>();
-  final _sixthDigitController = FormControl<String>();
-
   late final List<FormControl<String>> controllers = [
-    _firstDigitController,
-    _secondDigitController,
-    _thirdDigitController,
-    _fourthDigitController,
-    _fifthDigitController,
-    _sixthDigitController,
+    FormControl<String>(),
+    FormControl<String>(),
+    FormControl<String>(),
+    FormControl<String>(),
+    FormControl<String>(),
+    FormControl<String>(),
   ];
 
   late final _codeInputFormGroup = FormGroup({
-    'first_digit': _firstDigitController,
-    'second_digit': _secondDigitController,
-    'third_digit': _thirdDigitController,
-    'fourth_digit': _fourthDigitController,
-    'fifth_digit': _fifthDigitController,
-    'sixth_digit': _sixthDigitController,
+    'first_digit': controllers[0],
+    'second_digit': controllers[1],
+    'third_digit': controllers[2],
+    'fourth_digit': controllers[3],
+    'fifth_digit': controllers[4],
+    'sixth_digit': controllers[5],
   });
+
+  String get _fullCode {
+    final StringBuffer buffer = StringBuffer();
+
+    for (var controller in controllers) {
+      buffer.write(controller.value!);
+    }
+
+    return buffer.toString();
+  }
 
   @override
   void initState() {
     super.initState();
 
-    _sixthDigitController.valueChanges.listen(
+    controllers.last.valueChanges.listen(
       (value) {
-        if(value != null){
-          BlocProvider.of<SignUpBloc>(context);
+        if (value != null && value.isNotEmpty) {
+          //print('code sent');
+          BlocProvider.of<SignUpBloc>(context).add(
+            SignUpEvent.codeConfirmRequested(
+              code: _fullCode,
+              email: widget.email,
+            ),
+          );
         }
       },
     );
@@ -354,26 +381,55 @@ class _DigitInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: ReactiveTextField(
-        onChanged: (controller) {
-          if (controller.value != null &&
-              controller.value!.isNotEmpty &&
-              index != 5) {
-            FocusScope.of(context).nextFocus();
-
-            return;
-          }
-
-          FocusScope.of(context).unfocus();
+      child: BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
+          return ReactiveTextField(
+            readOnly: state.isCodeConfirming,
+            autofocus: index == 0,
+            onChanged: (controller) => onValueChanged(
+              controller: controller,
+              context: context,
+            ),
+            formControl: controller,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            cursorColor: AppColors.secondary,
+            style: const TextStyle(fontSize: 20),
+            decoration: const InputDecoration(
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.secondary,
+                  width: 3,
+                ),
+              ),
+            ),
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(1),
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+          );
         },
-        formControl: controller,
-        textAlign: TextAlign.center,
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(1),
-          FilteringTextInputFormatter.digitsOnly,
-        ],
       ),
     );
+  }
+
+  void onValueChanged({
+    required FormControl<String> controller,
+    required BuildContext context,
+  }) {
+    if (controller.value?.isEmpty == true && index != 0) {
+      FocusScope.of(context).previousFocus();
+
+      return;
+    }
+
+    if (controller.value?.isNotEmpty == true && index != 5) {
+      FocusScope.of(context).nextFocus();
+
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
   }
 }
 
@@ -385,12 +441,10 @@ class _AnimatedAccountTypeSelectToggle extends StatefulWidget {
   });
 
   @override
-  State<_AnimatedAccountTypeSelectToggle> createState() =>
-      _AnimatedAccountTypeSelectToggleState();
+  State<_AnimatedAccountTypeSelectToggle> createState() => _AnimatedAccountTypeSelectToggleState();
 }
 
-class _AnimatedAccountTypeSelectToggleState
-    extends State<_AnimatedAccountTypeSelectToggle> {
+class _AnimatedAccountTypeSelectToggleState extends State<_AnimatedAccountTypeSelectToggle> {
   AccountType _selectedType = AccountType.client;
 
   late final double width = MediaQuery.of(context).size.width - 32;
@@ -456,13 +510,10 @@ class _AnimatedAccountTypeSelectToggleState
               child: Container(
                 width: width / 2,
                 decoration: BoxDecoration(
-                    color: AppColors.secondary,
-                    borderRadius: BorderRadius.circular(12)),
+                    color: AppColors.secondary, borderRadius: BorderRadius.circular(12)),
                 child: Center(
                   child: Text(
-                    _selectedType == AccountType.client
-                        ? 'Спортсмен'
-                        : 'Тренер',
+                    _selectedType == AccountType.client ? 'Спортсмен' : 'Тренер',
                     style: const TextStyle(
                       color: AppColors.white,
                     ),

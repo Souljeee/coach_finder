@@ -18,6 +18,7 @@ class Guards extends StatelessWidget {
     return BlocProvider(
       create: (_) => GuardsBloc(
         authRepository: AppDependenciesScope.of(context).authRepository,
+        signUpRepository: AppDependenciesScope.of(context).signUpRepository,
       )..add(const GuardsEvent.guardsCheckingRequested()),
       child: BlocBuilder<GuardsBloc, GuardsState>(
         builder: (context, state) {
