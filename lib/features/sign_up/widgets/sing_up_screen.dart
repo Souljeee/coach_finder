@@ -68,6 +68,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   curve: Curves.easeIn,
                 );
               },
+              codeConfirmed: (_){
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Регистрация успешно завершена'),
+                  ),
+                );
+
+                Navigator.pop(context);
+              },
             );
           },
           child: SafeArea(
@@ -374,7 +383,6 @@ class _DigitInputField extends StatelessWidget {
   const _DigitInputField({
     required this.index,
     required this.controller,
-    super.key,
   });
 
   @override
