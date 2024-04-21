@@ -57,7 +57,7 @@ class _CreateWorkoutPlanScreenState extends State<CreateWorkoutPlanScreen> {
           'Создать программу',
           style: TextStyle(
             color: AppColors.secondary,
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
         ),

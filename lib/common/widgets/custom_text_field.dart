@@ -17,6 +17,7 @@ class CustomTextField<T> extends StatelessWidget {
   final Color focusedBorderColor;
   final int? maxLines;
   final String? helperText;
+  final Color cursorColor;
 
   const CustomTextField({
     required this.controller,
@@ -28,6 +29,7 @@ class CustomTextField<T> extends StatelessWidget {
     this.obscureText = false,
     this.enabledBorderColor = AppColors.secondary,
     this.focusedBorderColor = AppColors.secondary,
+    this.cursorColor = AppColors.primary,
     this.maxLines,
     this.helperText,
     super.key,
@@ -38,7 +40,7 @@ class CustomTextField<T> extends StatelessWidget {
     return ReactiveTextField(
       obscureText: obscureText,
       formControl: controller,
-      cursorColor: AppColors.primary,
+      cursorColor: cursorColor,
       validationMessages: validationMessages,
       maxLines: maxLines,
       decoration: InputDecoration(

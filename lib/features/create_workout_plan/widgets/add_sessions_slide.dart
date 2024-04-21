@@ -1,6 +1,8 @@
 import 'package:coach_finder/common/theme/colors.dart';
 import 'package:coach_finder/common/widgets/custom_elevated_button.dart';
+import 'package:coach_finder/features/create_workout_plan/widgets/add_exercise_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateSessionsSlide extends StatefulWidget {
   final int sessionsCount;
@@ -76,7 +78,13 @@ class _SessionPanelState extends State<_SessionPanel> {
                 title: 'Добавить упражнение',
                 icon: Icons.add,
                 style: ElevatedButtonStyle.tonal,
-                onTap: (){},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const AddExerciseModal(),
+                    ),
+                  );
+                },
               ),
             ),
           ],
