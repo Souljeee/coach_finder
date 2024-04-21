@@ -15,6 +15,8 @@ class CustomTextField<T> extends StatelessWidget {
   final Color? suffixIconColor;
   final Color enabledBorderColor;
   final Color focusedBorderColor;
+  final int? maxLines;
+  final String? helperText;
 
   const CustomTextField({
     required this.controller,
@@ -26,6 +28,8 @@ class CustomTextField<T> extends StatelessWidget {
     this.obscureText = false,
     this.enabledBorderColor = AppColors.secondary,
     this.focusedBorderColor = AppColors.secondary,
+    this.maxLines,
+    this.helperText,
     super.key,
   });
 
@@ -36,9 +40,11 @@ class CustomTextField<T> extends StatelessWidget {
       formControl: controller,
       cursorColor: AppColors.primary,
       validationMessages: validationMessages,
+      maxLines: maxLines,
       decoration: InputDecoration(
         filled: true,
         fillColor: AppColors.white,
+        helperText: helperText,
         suffixIcon: suffixIcon,
         suffixIconColor: suffixIconColor,
         prefixIcon: prefixIcon,
