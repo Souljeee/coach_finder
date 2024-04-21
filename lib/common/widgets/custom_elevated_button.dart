@@ -1,20 +1,43 @@
 import 'package:coach_finder/common/theme/colors.dart';
 import 'package:flutter/material.dart';
 
+enum ElevatedButtonStyle {
+  flat(
+    backgroundColor: AppColors.primary,
+    textColor: AppColors.white,
+  ),
+  tonal(
+    backgroundColor: AppColors.lightGray,
+    textColor: AppColors.secondary,
+  ),
+  transparent(
+    backgroundColor: Colors.transparent,
+    textColor: AppColors.secondary,
+  );
+
+  final Color backgroundColor;
+  final Color textColor;
+
+  const ElevatedButtonStyle({
+    required this.backgroundColor,
+    required this.textColor,
+  });
+}
+
 class CustomElevatedButton extends StatelessWidget {
   final String title;
   final bool maxSize;
   final VoidCallback? onTap;
   final bool isLoading;
 
-  final Color color;
+  final ElevatedButtonStyle style;
 
   const CustomElevatedButton({
     required this.title,
     required this.onTap,
     this.isLoading = false,
     this.maxSize = false,
-    this.color = AppColors.primary,
+    this.style = ElevatedButtonStyle.flat,
     super.key,
   });
 
@@ -24,27 +47,26 @@ class CustomElevatedButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Material(
         child: Ink(
-          height: 56,
           width: maxSize ? double.infinity : null,
-          color: onTap != null ? color : AppColors.lightGray,
+          color: onTap != null ? style.backgroundColor : AppColors.lightGray,
           child: InkWell(
             onTap: onTap,
             child: Align(
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(12.0),
                 child: isLoading
-                    ? const SizedBox.square(
+                    ? SizedBox.square(
                         dimension: 24,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: AppColors.white,
+                          color: style.textColor,
                         ),
                       )
                     : Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.white,
+                          color: style.textColor,
                           fontSize: 16,
                         ),
                       ),

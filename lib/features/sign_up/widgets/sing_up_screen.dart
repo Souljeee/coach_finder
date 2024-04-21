@@ -22,7 +22,6 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _pageController = PageController(initialPage: 0);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
