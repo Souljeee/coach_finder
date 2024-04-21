@@ -4,6 +4,8 @@ import 'package:coach_finder/features/auth/data/data_sources/remote_auth_data_so
 import 'package:coach_finder/features/auth/data/repository/auth_repository.dart';
 import 'package:coach_finder/features/sign_up/data/data_sources/sign_up_data_source.dart';
 import 'package:coach_finder/features/sign_up/data/repository/sign_up_repository.dart';
+import 'package:coach_finder/features/workout_plans/common/data/data_sources/workout_plan_remote_data_source.dart';
+import 'package:coach_finder/features/workout_plans/common/data/repositories/workout_plan_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +33,7 @@ class AppDependenciesScope extends StatefulWidget {
 
 class _AppDependenciesScopeState extends State<AppDependenciesScope> {
   final _secureStorage = SecureStorage();
-  late final _networkClient =
-      CustomNetworkClient(secureStorage: _secureStorage).client;
+  late final _networkClient = CustomNetworkClient(secureStorage: _secureStorage).client;
 
   late final RemoteAuthDataSource _remoteAuthDataSource = RemoteAuthDataSource(
     networkClient: _networkClient,
@@ -51,6 +52,14 @@ class _AppDependenciesScopeState extends State<AppDependenciesScope> {
     signUpDataSource: _signUpDataSource,
   );
 
+  late final WorkoutPlanRemoteDataSource _workoutPlanRemoteDataSource = WorkoutPlanRemoteDataSource(
+    networkClient: _networkClient,
+  );
+
+  late final WorkoutPlanRepository _workoutPlanRepository = WorkoutPlanRepository(
+    workoutPlanRemoteDataSource: _workoutPlanRemoteDataSource,
+  );
+
   late final _appDependencies = AppDependencies(
     secureStorage: _secureStorage,
     networkClient: _networkClient,
@@ -58,6 +67,8 @@ class _AppDependenciesScopeState extends State<AppDependenciesScope> {
     remoteAuthDataSource: _remoteAuthDataSource,
     signUpDataSource: _signUpDataSource,
     signUpRepository: _signUpRepository,
+    workoutPlanRemoteDataSource: _workoutPlanRemoteDataSource,
+    workoutPlanRepository: _workoutPlanRepository,
   );
 
   @override
@@ -94,6 +105,10 @@ class AppDependencies extends Equatable {
 
   final SignUpRepository signUpRepository;
 
+  final WorkoutPlanRemoteDataSource workoutPlanRemoteDataSource;
+
+  final WorkoutPlanRepository workoutPlanRepository;
+
   const AppDependencies({
     required this.secureStorage,
     required this.networkClient,
@@ -101,6 +116,8 @@ class AppDependencies extends Equatable {
     required this.authRepository,
     required this.signUpDataSource,
     required this.signUpRepository,
+    required this.workoutPlanRemoteDataSource,
+    required this.workoutPlanRepository,
   });
 
   @override
@@ -111,5 +128,7 @@ class AppDependencies extends Equatable {
         authRepository,
         signUpDataSource,
         signUpRepository,
+        workoutPlanRemoteDataSource,
+        workoutPlanRepository,
       ];
 }
