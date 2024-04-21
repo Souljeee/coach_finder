@@ -1,7 +1,7 @@
 import 'package:coach_finder/common/theme/colors.dart';
 import 'package:coach_finder/common/widgets/custom_elevated_button.dart';
-import 'package:coach_finder/features/create_workout_plan/widgets/add_sessions_slide.dart';
-import 'package:coach_finder/features/create_workout_plan/widgets/input_general_info_slide.dart';
+import 'package:coach_finder/features/workout_plans/create_workout_plan/widgets/add_sessions_slide.dart';
+import 'package:coach_finder/features/workout_plans/create_workout_plan/widgets/input_general_info_slide.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 

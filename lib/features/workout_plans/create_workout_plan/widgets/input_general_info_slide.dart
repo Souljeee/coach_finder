@@ -1,6 +1,6 @@
 import 'package:coach_finder/common/theme/colors.dart';
 import 'package:coach_finder/common/widgets/custom_text_field.dart';
-import 'package:coach_finder/features/create_workout_plan/data/data_sources/dtos/difficulty_enum.dart';
+import 'package:coach_finder/features/workout_plans/create_workout_plan/data/data_sources/dtos/difficulty_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 

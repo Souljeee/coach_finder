@@ -1,7 +1,7 @@
-import 'package:coach_finder/features/create_workout_plan/create_workout_plan.dart';
 import 'package:coach_finder/features/home/ui/home_screen.dart';
 import 'package:coach_finder/features/profile/ui/profile_screen.dart';
 import 'package:coach_finder/features/root/root_screen.dart';
+import 'package:coach_finder/features/workout_plans/create_workout_plan/create_workout_plan.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
