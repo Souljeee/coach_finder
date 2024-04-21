@@ -23,36 +23,36 @@ class InputGeneralInfoSlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ListView(
       padding: const EdgeInsets.symmetric(
         vertical: 8,
         horizontal: 16,
       ),
-      child: ListView(
-        children: [
-          CustomTextField(
-            controller: planNameController,
-            hint: 'Название',
-            validationMessages: {ValidationMessage.required: (_) => 'Обязательное поле'},
-          ),
-          const SizedBox(height: 8),
-          CustomTextField(
-            controller: descriptionController,
-            hint: 'Описание',
-            maxLines: 4,
-          ),
-          const SizedBox(height: 8),
-          _ChipList(onDifficultyChange: onDifficultyChange),
-          const SizedBox(height: 16),
-          _SessionsPerWeekSlider(onSessionsCountChange: onSessionsCountChange),
-          const SizedBox(height: 8),
-          CustomTextField(
-            controller: planDurationController,
-            hint: 'Длительность програмы',
-            helperText: 'Укажите длительность в неделях',
-          ),
-        ],
-      ),
+      physics: const BouncingScrollPhysics(),
+      children: [
+        CustomTextField(
+          controller: planNameController,
+          hint: 'Название',
+          validationMessages: {ValidationMessage.required: (_) => 'Обязательное поле'},
+        ),
+        const SizedBox(height: 8),
+        CustomTextField(
+          controller: descriptionController,
+          hint: 'Описание',
+          maxLines: 4,
+        ),
+        const SizedBox(height: 8),
+        _ChipList(onDifficultyChange: onDifficultyChange),
+        const SizedBox(height: 16),
+        _SessionsPerWeekSlider(onSessionsCountChange: onSessionsCountChange),
+        const SizedBox(height: 8),
+        CustomTextField(
+          controller: planDurationController,
+          hint: 'Длительность програмы',
+          helperText: 'Укажите длительность в неделях',
+          validationMessages: {ValidationMessage.required: (_) => 'Обязательное поле'},
+        ),
+      ],
     );
   }
 }

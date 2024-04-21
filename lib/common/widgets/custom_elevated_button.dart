@@ -7,7 +7,7 @@ enum ElevatedButtonStyle {
     textColor: AppColors.white,
   ),
   tonal(
-    backgroundColor: AppColors.lightGray,
+    backgroundColor: AppColors.white,
     textColor: AppColors.secondary,
   ),
   transparent(
@@ -29,8 +29,8 @@ class CustomElevatedButton extends StatelessWidget {
   final bool maxSize;
   final VoidCallback? onTap;
   final bool isLoading;
-
   final ElevatedButtonStyle style;
+  final IconData? icon;
 
   const CustomElevatedButton({
     required this.title,
@@ -38,6 +38,7 @@ class CustomElevatedButton extends StatelessWidget {
     this.isLoading = false,
     this.maxSize = false,
     this.style = ElevatedButtonStyle.flat,
+    this.icon,
     super.key,
   });
 
@@ -62,13 +63,26 @@ class CustomElevatedButton extends StatelessWidget {
                           color: style.textColor,
                         ),
                       )
-                    : Text(
-                        title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: style.textColor,
-                          fontSize: 16,
-                        ),
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (icon != null) ...[
+                            Icon(
+                              icon,
+                              color: style.textColor,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 16),
+                          ],
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: style.textColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
               ),
             ),
