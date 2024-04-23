@@ -155,6 +155,7 @@ class _AccountTypeSelectorState extends State<_AccountTypeSelector> {
                 validationMessages: {
                   ValidationMessage.required: (_) => 'Введите пароль'
                 },
+                maxLines: 1,
               ),
               const SizedBox(height: 16),
               CustomElevatedButton(

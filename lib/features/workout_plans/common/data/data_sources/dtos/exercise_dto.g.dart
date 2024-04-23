@@ -13,12 +13,12 @@ ExerciseDto _$ExerciseDtoFromJson(Map<String, dynamic> json) => ExerciseDto(
       description: json['description'] as String?,
       imageUrl: json['imageUrl'] as String?,
       videoUrl: json['videoUrl'] as String?,
-      authorId: json['authorId'] as String,
+      authorId: json['authorId'] as String?,
       difficulty:
           $enumDecodeNullable(_$DifficultyEnumMap, json['difficulty']) ??
               Difficulty.all,
       muscleGroups: (json['muscleGroups'] as List<dynamic>)
-          .map((e) => e as String)
+          .map((e) => $enumDecode(_$MuscleGroupsEnumMap, e))
           .toList(),
     );
 
@@ -32,7 +32,8 @@ Map<String, dynamic> _$ExerciseDtoToJson(ExerciseDto instance) =>
       'videoUrl': instance.videoUrl,
       'authorId': instance.authorId,
       'difficulty': _$DifficultyEnumMap[instance.difficulty]!,
-      'muscleGroups': instance.muscleGroups,
+      'muscleGroups':
+          instance.muscleGroups.map((e) => _$MuscleGroupsEnumMap[e]!).toList(),
     };
 
 const _$DifficultyEnumMap = {
@@ -40,4 +41,12 @@ const _$DifficultyEnumMap = {
   Difficulty.medium: 'client',
   Difficulty.hard: 'hard',
   Difficulty.all: 'all',
+};
+
+const _$MuscleGroupsEnumMap = {
+  MuscleGroups.shouldersAnteriorDelta: 'shoulders_anterior_delta',
+  MuscleGroups.biceps: 'biceps',
+  MuscleGroups.triceps: 'triceps',
+  MuscleGroups.calfMuscle: 'calf_muscle',
+  MuscleGroups.latissimusDorsi: 'latissimus_dorsi',
 };

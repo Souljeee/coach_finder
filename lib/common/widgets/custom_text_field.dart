@@ -6,6 +6,7 @@ typedef ValidationMessagesMap = Map<String, String Function(Object)>?;
 
 class CustomTextField<T> extends StatelessWidget {
   final FormControl<T> controller;
+  final void Function(FormControl<T>)? onChanged;
   final String hint;
 
   final Widget? suffixIcon;
@@ -22,6 +23,7 @@ class CustomTextField<T> extends StatelessWidget {
   const CustomTextField({
     required this.controller,
     required this.hint,
+    this.onChanged,
     this.suffixIcon,
     this.suffixIconColor,
     this.prefixIcon,
@@ -41,6 +43,7 @@ class CustomTextField<T> extends StatelessWidget {
       obscureText: obscureText,
       formControl: controller,
       cursorColor: cursorColor,
+      onChanged: onChanged,
       validationMessages: validationMessages,
       maxLines: maxLines,
       decoration: InputDecoration(

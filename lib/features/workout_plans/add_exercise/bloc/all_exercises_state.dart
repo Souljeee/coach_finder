@@ -8,7 +8,9 @@ sealed class AllExercisesState extends Equatable {
   const factory AllExercisesState.loading() = _LoadingState;
 
   const factory AllExercisesState.success({
+    required List<ExerciseDto> searchedExercises,
     required List<ExerciseDto> exercises,
+    required List<MuscleGroups> muscleGroups,
   }) = _SuccessState;
 
   const factory AllExercisesState.error() = _ErrorState;
@@ -58,12 +60,23 @@ class _LoadingState extends AllExercisesState {
 }
 
 class _SuccessState extends AllExercisesState {
+  final List<ExerciseDto> searchedExercises;
   final List<ExerciseDto> exercises;
 
-  const _SuccessState({required this.exercises});
+  final List<MuscleGroups> muscleGroups;
+
+  const _SuccessState({
+    required this.searchedExercises,
+    required this.exercises,
+    required this.muscleGroups,
+  });
 
   @override
-  List<Object?> get props => [exercises];
+  List<Object?> get props => [
+        searchedExercises,
+        exercises,
+        muscleGroups,
+      ];
 }
 
 class _ErrorState extends AllExercisesState {

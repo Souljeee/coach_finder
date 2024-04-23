@@ -1,4 +1,5 @@
 import 'package:coach_finder/features/workout_plans/common/data/data_sources/dtos/difficulty_enum.dart';
+import 'package:coach_finder/features/workout_plans/common/data/data_sources/dtos/muscle_groups_enum.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'exercise_dto.g.dart';
@@ -11,10 +12,10 @@ class ExerciseDto{
   final String? description;
   final String? imageUrl;
   final String? videoUrl;
-  final String authorId;
+  final String? authorId;
   @JsonKey(defaultValue: Difficulty.all)
   final Difficulty difficulty;
-  final List<String> muscleGroups;
+  final List<MuscleGroups> muscleGroups;
 
   const ExerciseDto({
     required this.id,
