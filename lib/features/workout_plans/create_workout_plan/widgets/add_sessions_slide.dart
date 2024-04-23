@@ -1,7 +1,9 @@
 import 'package:coach_finder/common/theme/colors.dart';
 import 'package:coach_finder/common/widgets/custom_elevated_button.dart';
 import 'package:coach_finder/features/workout_plans/add_exercise/widgets/add_exercise_modal.dart';
+import 'package:coach_finder/features/workout_plans/common/ui/models/exercise_model.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 
 class CreateSessionsSlide extends StatefulWidget {
   final int sessionsCount;
@@ -49,6 +51,8 @@ class _SessionPanel extends StatefulWidget {
 }
 
 class _SessionPanelState extends State<_SessionPanel> {
+  final List<ExerciseModel> exercises = [];
+
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -71,18 +75,35 @@ class _SessionPanelState extends State<_SessionPanel> {
       children: [
         Column(
           children: [
+            ...exercises.mapIndexed(
+              (index, exercise) {
+                return ListTile(
+                  title: Text(exercise.name),
+                );
+              },
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: CustomElevatedButton(
                 title: 'Добавить упражнение',
                 icon: Icons.add,
                 style: ElevatedButtonStyle.tonal,
-                onTap: () {
-                  Navigator.of(context).push(
+                onTap: () async {
+                  final ExerciseModel? result = await Navigator.of(context).push<ExerciseModel>(
                     MaterialPageRoute(
-                      builder: (context) => const AddExerciseModal(),
+                      builder: (context) => AddExerciseModal(
+                        exerciseOrderNumber: exercises.length + 1,
+                      ),
                     ),
                   );
+
+                  if (result == null) {
+                    return;
+                  }
+
+                  setState(() {
+                    exercises.add(result);
+                  });
                 },
               ),
             ),

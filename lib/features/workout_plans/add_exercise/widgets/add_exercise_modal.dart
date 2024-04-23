@@ -3,9 +3,11 @@ import 'package:coach_finder/common/theme/colors.dart';
 import 'package:coach_finder/common/utils/debounce.dart';
 import 'package:coach_finder/common/widgets/custom_elevated_button.dart';
 import 'package:coach_finder/common/widgets/custom_text_field.dart';
+import 'package:coach_finder/features/workout_plans/add_approaches/add_approaches_modal.dart';
 import 'package:coach_finder/features/workout_plans/add_exercise/bloc/all_exercises_bloc.dart';
 import 'package:coach_finder/features/workout_plans/common/data/data_sources/dtos/exercise_dto.dart';
 import 'package:coach_finder/features/workout_plans/common/data/data_sources/dtos/muscle_groups_enum.dart';
+import 'package:coach_finder/features/workout_plans/common/ui/models/exercise_model.dart';
 import 'package:coach_finder/generated/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +15,10 @@ import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class AddExerciseModal extends StatefulWidget {
+  final int exerciseOrderNumber;
+
   const AddExerciseModal({
+    required this.exerciseOrderNumber,
     super.key,
   });
 
@@ -40,9 +45,9 @@ class _AddExerciseModalState extends State<AddExerciseModal> {
 
   @override
   Future<void> dispose() async {
-    await _allExercisesBloc.close();
-
     super.dispose();
+
+    await _allExercisesBloc.close();
   }
 
   @override
@@ -141,7 +146,25 @@ class _AddExerciseModalState extends State<AddExerciseModal> {
                           itemCount: searchedExercisesWithFilters.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              onTap: () {},
+                              onTap: () async {
+                                final ExerciseModel? result =
+                                    await Navigator.of(context).push<ExerciseModel>(
+                                  MaterialPageRoute(
+                                    builder: (context) => AddApproachesModal(
+                                      exercise: searchedExercisesWithFilters[index],
+                                      exerciseOrderNumber: widget.exerciseOrderNumber,
+                                    ),
+                                  ),
+                                );
+
+                                if(result == null){
+                                  return;
+                                }
+
+                                if(context.mounted){
+                                  context.pop(result);
+                                }
+                              },
                               title: Text(searchedExercisesWithFilters[index].name),
                               leading: Image.asset(
                                 Assets.assetsImg,
@@ -209,7 +232,7 @@ class _AddExerciseModalState extends State<AddExerciseModal> {
       return;
     }
 
-    if(result.isEmpty){
+    if (result.isEmpty) {
       setState(() {
         _appliedFilters = null;
       });
