@@ -1,5 +1,6 @@
 import 'package:coach_finder/features/workout_plans/common/data/data_sources/dtos/all_muscle_groups_dto.dart';
 import 'package:coach_finder/features/workout_plans/common/data/data_sources/dtos/exercise_dto.dart';
+import 'package:coach_finder/features/workout_plans/common/data/data_sources/dtos/workout_plan_dto.dart';
 import 'package:dio/dio.dart';
 
 class WorkoutPlanRemoteDataSource {
@@ -21,5 +22,12 @@ class WorkoutPlanRemoteDataSource {
     final response = await _networkClient.get('/all_muscle_groups');
 
     return AllMuscleGroupsDto.fromJson(response.data);
+  }
+
+  Future<void> createWorkoutPlan({required WorkoutPlanDto workoutPlanDto}) async {
+    await _networkClient.post(
+      '/create_workout_plan',
+      data: workoutPlanDto.toJson(),
+    );
   }
 }

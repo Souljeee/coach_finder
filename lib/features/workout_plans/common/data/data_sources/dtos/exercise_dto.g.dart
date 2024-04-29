@@ -37,8 +37,8 @@ Map<String, dynamic> _$ExerciseDtoToJson(ExerciseDto instance) =>
     };
 
 const _$DifficultyEnumMap = {
-  Difficulty.easy: 'coach',
-  Difficulty.medium: 'client',
+  Difficulty.easy: 'easy',
+  Difficulty.medium: 'medium',
   Difficulty.hard: 'hard',
   Difficulty.all: 'all',
 };

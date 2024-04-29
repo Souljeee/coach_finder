@@ -1,7 +1,7 @@
 class ApproachModel{
   final int orderNumber;
   final int repsCount;
-  final int weight;
+  final double weight;
   final int rest;
 
   const ApproachModel({

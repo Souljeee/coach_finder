@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
 enum Difficulty{
-  @JsonValue('coach')
+  @JsonValue('easy')
   easy,
-  @JsonValue('client')
+  @JsonValue('medium')
   medium,
   @JsonValue('hard')
   hard,

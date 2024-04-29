@@ -170,7 +170,7 @@ class _AddApproachesModalState extends State<AddApproachesModal> {
                         (index, controllerModel) => ApproachModel(
                           orderNumber: index + 1,
                           repsCount: int.parse(controllerModel.repsCountController.value!),
-                          weight: int.parse(controllerModel.weightController.value!),
+                          weight: double.parse(controllerModel.weightController.value!),
                           rest: int.parse(controllerModel.restController.value!),
                         ),
                       )
