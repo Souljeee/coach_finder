@@ -2,6 +2,8 @@ import 'package:coach_finder/common/data/secure_storage.dart';
 import 'package:coach_finder/common/network/network.dart';
 import 'package:coach_finder/features/auth/data/data_sources/remote_auth_data_source.dart';
 import 'package:coach_finder/features/auth/data/repository/auth_repository.dart';
+import 'package:coach_finder/features/profile/coach/data/data_sources/coach_remote_data_source.dart';
+import 'package:coach_finder/features/profile/coach/data/repositories/coach_repository.dart';
 import 'package:coach_finder/features/profile/data/data_sources/user_remote_data_source.dart';
 import 'package:coach_finder/features/profile/data/repositories/user_repository.dart';
 import 'package:coach_finder/features/sign_up/data/data_sources/sign_up_data_source.dart';
@@ -70,6 +72,14 @@ class _AppDependenciesScopeState extends State<AppDependenciesScope> {
     userRemoteDataSource: _userRemoteDataSource,
   );
 
+  late final CoachRemoteDataSource _coachRemoteDataSource = CoachRemoteDataSource(
+    networkClient: _networkClient,
+  );
+
+  late final CoachRepository _coachRepository = CoachRepository(
+    coachRemoteDataSource: _coachRemoteDataSource,
+  );
+
   late final _appDependencies = AppDependencies(
     secureStorage: _secureStorage,
     networkClient: _networkClient,
@@ -81,6 +91,8 @@ class _AppDependenciesScopeState extends State<AppDependenciesScope> {
     workoutPlanRepository: _workoutPlanRepository,
     userRemoteDataSource: _userRemoteDataSource,
     userRepository: _userRepository,
+    coachRemoteDataSource: _coachRemoteDataSource,
+    coachRepository: _coachRepository,
   );
 
   @override
@@ -125,6 +137,10 @@ class AppDependencies extends Equatable {
 
   final UserRepository userRepository;
 
+  final CoachRemoteDataSource coachRemoteDataSource;
+
+  final CoachRepository coachRepository;
+
   const AppDependencies({
     required this.secureStorage,
     required this.networkClient,
@@ -136,6 +152,8 @@ class AppDependencies extends Equatable {
     required this.workoutPlanRepository,
     required this.userRemoteDataSource,
     required this.userRepository,
+    required this.coachRemoteDataSource,
+    required this.coachRepository,
   });
 
   @override
@@ -150,5 +168,7 @@ class AppDependencies extends Equatable {
         workoutPlanRepository,
         userRemoteDataSource,
         userRepository,
+        coachRemoteDataSource,
+        coachRepository,
       ];
 }

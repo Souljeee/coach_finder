@@ -5,12 +5,14 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        Center(
-          child: Text('Profile'),
-        )
-      ],
+    return SafeArea(
+      child: Column(
+        children: [
+          Center(
+            child: Text('Profile'),
+          )
+        ],
+      ),
     );
   }
 }
