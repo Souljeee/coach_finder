@@ -8,8 +8,8 @@ part of 'coach_info_dto.dart';
 
 CoachInfoDto _$CoachInfoDtoFromJson(Map<String, dynamic> json) => CoachInfoDto(
       id: json['coachId'] as String,
-      experience: json['experience'] as int,
-      description: json['description'] as String,
+      experience: json['experience'] as int?,
+      description: json['description'] as String?,
       rating: (json['rating'] as num).toDouble(),
     );
 

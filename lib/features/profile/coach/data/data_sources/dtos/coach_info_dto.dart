@@ -7,8 +7,8 @@ part 'coach_info_dto.g.dart';
 class CoachInfoDto extends Equatable {
   @JsonKey(name: 'coachId')
   final String id;
-  final int experience;
-  final String description;
+  final int? experience;
+  final String? description;
   final double rating;
 
   const CoachInfoDto({
